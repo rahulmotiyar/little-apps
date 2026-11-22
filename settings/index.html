@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Settings</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../productivity.css">
+  <link rel="stylesheet" href="../controls.css">
+  <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+  <link rel="stylesheet" href="settings.css?v=20261121-display-options">
+</head>
+<body>
+  <div class="tool-page settings-page">
+    <header class="tool-header">
+      <h1 class="tool-title">Settings</h1>
+      <div class="tool-controls">
+        <span class="app-exit-group"><a class="close-app app-close" href="../" aria-label="Exit Settings"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+      </div>
+    </header>
+    <main class="settings-workspace">
+      <nav class="settings-navigation" aria-label="Settings sections">
+        <p class="settings-group">General</p>
+        <a class="settings-tab" href="#display" id="display-tab" aria-current="page">Display</a>
+      </nav>
+      <section class="settings-main" id="display" aria-labelledby="display-title">
+        <h2 class="settings-title" id="display-title">Display</h2>
+        <div class="settings-panel">
+          <fieldset class="orientation-options">
+            <legend>Orientation</legend>
+            <label class="settings-option"><input type="radio" name="orientation" value="portrait"><span>Portrait</span></label>
+            <label class="settings-option"><input type="radio" name="orientation" value="landscape"><span>Landscape</span></label>
+          </fieldset>
+          <fieldset class="display-options">
+            <legend>Launcher</legend>
+            <label class="settings-option"><input type="checkbox" id="show-widgets" checked><span>Show widgets on launcher</span></label>
+          </fieldset>
+          <p id="storage-warning" class="settings-warning" role="status" hidden>Couldn’t save this setting on this device.</p>
+          <p id="orientation-message" class="settings-warning" role="status" hidden></p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="../orientation.js?v=20261121-display-preferences"></script>
+  <script src="settings.js?v=20261121-display-options"></script>
+  <script src="display.js?v=20261121-display-options"></script>
+</body>
+</html>

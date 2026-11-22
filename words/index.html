@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Words</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../productivity.css">
+  <link rel="stylesheet" href="styles.css?v=20261121-manual-rotation-v2">
+  <link rel="stylesheet" href="../controls.css">
+  <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+</head>
+<body>
+  <div class="tool-page words-page" id="words-page">
+    <header class="tool-header words-header">
+      <h1 class="tool-title">Words</h1>
+      <div class="tool-controls">
+        <div class="tool-actions words-actions">
+          <label class="sr-only" for="group">School group</label>
+          <select id="group" aria-label="School group">
+            <option value="3">Groep 3</option><option value="4">Groep 4</option><option value="5">Groep 5</option>
+          </select>
+          <label class="sr-only" for="activity">Activity</label>
+          <select id="activity" aria-label="Activity"><option value="read">Reading</option><option value="spell">Spelling</option></select>
+          <button class="tool-button" id="new-round" type="button" aria-label="Reset Words" title="Reset"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg></button>
+        </div>
+        <span class="words-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Words"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+      </div>
+    </header>
+    <main class="words-main" lang="nl">
+      <noscript><p>Zet JavaScript aan om te spelen.</p></noscript>
+      <div class="round-progress">
+        <div class="stars" id="stars" aria-label="0 van 5 sterren">
+          <svg class="progress-star" id="star-0" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-1" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-2" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-4" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+        </div>
+        <p class="progress-copy" id="progress-copy">1 van 5</p>
+      </div>
+      <section class="read-panel learning-panel" id="read-panel" aria-label="Lezen">
+        <div class="reading-text">
+        <h2 class="story-title" id="story-title"></h2>
+        <p class="story" id="story"></p>
+        </div>
+        <div class="reading-task">
+        <h3 class="read-question" id="read-question"></h3>
+        <div class="read-choices" id="read-choices" role="group" aria-labelledby="read-question"></div>
+        </div>
+      </section>
+      <section class="spell-panel learning-panel" id="spell-panel" style="display:none" aria-label="Spellen">
+        <div class="spell-riddle">
+        <p class="spell-prompt">Welk woord zoeken we?</p>
+        <img class="spell-picture" id="spell-picture" width="120" height="90" alt="" aria-hidden="true" style="display:none">
+        <h2 class="spell-clue" id="spell-clue"></h2>
+        </div>
+        <div class="spell-build">
+        <div class="word-slots" id="word-slots" role="group" aria-label="Jouw woord"></div>
+        <p class="bank-instruction">Tik de letters in de goede volgorde.</p>
+        <div class="letter-bank" id="letter-bank" role="group" aria-label="Letters"></div>
+        <div class="spell-tools">
+          <button class="tool-button" id="undo-letter" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4-5 5 5 5M4 9h9a7 7 0 1 1-5 12"/></svg><span>Terug</span></button>
+          <button class="tool-button check-word" id="check-word" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Controleer</span></button>
+        </div>
+        </div>
+      </section>
+      <div class="answer-feedback">
+        <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+      </div>
+    </main>
+  </div>
+  <div class="words-result" id="result-overlay" style="display:none" aria-hidden="true">
+    <div class="result-center">
+      <section class="result-dialog" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-describedby="result-copy">
+        <div class="result-stars" aria-hidden="true">★ ★ ★ ★ ★</div>
+        <h2 class="result-title" id="result-title" lang="nl">Hoera!</h2>
+        <p class="result-copy" id="result-copy" lang="nl">Vijf sterren. Goed gedaan!</p>
+        <button class="result-action result-primary" id="result-new-round" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg><span>Reset</span></button>
+        <a class="result-action app-close" id="result-exit" href="../" aria-label="Exit Words"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
+      </section>
+    </div>
+  </div>
+  <script src="../orientation.js?v=20261121-display-preferences"></script>
+  <script src="engine.js"></script><script src="../game-flow.js"></script>
+  <script src="app.js"></script>
+  <script src="../dropdowns.js?v=20261121-manual-rotation-v2"></script>
+</body>
+</html>

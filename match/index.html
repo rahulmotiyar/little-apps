@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Match</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../productivity.css">
+  <link rel="stylesheet" href="styles.css?v=20261121-manual-rotation-v2">
+  <link rel="stylesheet" href="../controls.css">
+  <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+</head>
+<body>
+  <div class="tool-page match-page" id="match-page">
+    <header class="tool-header match-header">
+      <h1 class="tool-title">Match</h1>
+      <div class="tool-controls">
+        <div class="tool-actions match-actions">
+          <label class="sr-only" for="group">School group</label>
+          <select id="group" aria-label="School group">
+            <option value="3">Groep 3</option>
+            <option value="4">Groep 4</option>
+            <option value="5">Groep 5</option>
+          </select>
+          <label class="sr-only" for="topic">Activity</label>
+          <select id="topic" aria-label="Activity">
+            <option value="numbers">Numbers</option>
+            <option value="sums">Sums</option>
+            <option value="time">Time</option>
+          </select>
+          <button class="tool-button" id="new-round" type="button" aria-label="Reset Match" title="Reset"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg></button>
+        </div>
+        <span class="match-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Match"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+      </div>
+    </header>
+    <main class="match-main">
+      <noscript><p>Turn on JavaScript to play Match.</p></noscript>
+      <div class="round-progress">
+        <div class="stars" id="stars" aria-label="0 of 4 stars earned">
+          <svg class="progress-star" id="star-0" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-1" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-2" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+          <svg class="progress-star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
+        </div>
+        <p class="progress-copy" id="progress-copy">0 of 4 pairs</p>
+      </div>
+      <p class="instruction" id="instruction">Count the dots, then find the number.</p>
+      <div class="match-board" aria-label="Find four matching pairs">
+        <div class="card-column" id="left-cards" role="group" aria-label="Pictures and questions"></div>
+        <div class="card-column" id="right-cards" role="group" aria-label="Matching answers"></div>
+      </div>
+      <p class="feedback" id="feedback" role="status" aria-live="polite">Tap two that belong together.</p>
+    </main>
+  </div>
+  <div class="match-result" id="result-overlay" style="display:none" aria-hidden="true">
+    <div class="result-center">
+      <section class="result-dialog" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-describedby="result-copy">
+        <div class="result-stars" aria-hidden="true">★ ★ ★ ★</div>
+        <h2 class="result-title" id="result-title">Perfect pairs!</h2>
+        <p class="result-copy" id="result-copy">You found them all. Hooray!</p>
+        <button class="result-action result-primary" id="result-new-round" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg><span>Reset</span></button>
+        <a class="result-action app-close" id="result-exit" href="../" aria-label="Exit Match"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
+      </section>
+    </div>
+  </div>
+  <script src="../orientation.js?v=20261121-display-preferences"></script>
+  <script src="engine.js"></script>
+  <script src="../game-flow.js"></script>
+  <script src="app.js"></script>
+  <script src="../dropdowns.js?v=20261121-manual-rotation-v2"></script>
+</body>
+</html>

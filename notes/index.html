@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sticky notes</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../productivity.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../controls.css">
+  <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+</head>
+<body>
+  <main class="tool-page notes-page">
+    <header class="tool-header">
+      <h1 class="tool-title">Sticky notes</h1>
+      <div class="tool-controls">
+        <div class="tool-actions notes-actions">
+          <button class="tool-button icon-add" id="add-note" type="button" title="Add note">Add note</button>
+          <button class="tool-button notes-undo icon-undo" id="undo-remove" type="button" aria-label="Undo remove" title="Undo remove" style="display: none">Undo remove</button>
+        </div>
+        <span class="app-exit-group"><a class="close-app app-close" href="../" aria-label="Exit Sticky notes"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+      </div>
+    </header>
+
+    <p class="tool-status notes-status" id="notes-status" role="status" aria-live="polite"></p>
+    <p class="empty-notes" id="empty-notes">No notes yet.</p>
+    <div class="notes-board" id="notes-board"></div>
+
+    <noscript><p>Enable JavaScript in your browser to write notes.</p></noscript>
+  </main>
+  <script src="../orientation.js?v=20261121-display-preferences"></script>
+  <script src="state.js"></script>
+  <script src="notes.js"></script>
+  <script src="../dropdowns.js?v=20261121-manual-rotation-v2"></script>
+</body>
+</html>

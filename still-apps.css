@@ -1,0 +1,191 @@
+/* Still design system, adapted to the existing Little Apps controls. */
+@import url("design-system/tokens.css");
+@font-face { font-family: 'Still Sans'; src: url('design-system/fonts/SourceSans3-Regular.woff') format('woff'); font-style: normal; font-weight: 400; }
+@font-face { font-family: 'Still Sans'; src: url('design-system/fonts/SourceSans3-Semibold.woff') format('woff'); font-style: normal; font-weight: 600; }
+@font-face { font-family: 'Still Sans'; src: url('design-system/fonts/SourceSans3-Bold.woff') format('woff'); font-style: normal; font-weight: 700; }
+body, button, input, select, textarea, .tool-button, .close-app, .app-name, .notebook-item, .section-heading, .cell, .sudoku-cell, .note-text { font-family: 'Still Sans', 'Frutiger', sans-serif; }
+body { color:#1c1c1c; }
+.tool-header, .sums-header.tool-header, .game-header, .launcher-header { background:#f3f3f3; background:var(--st-toolbar); border-bottom:1px solid #ccc; }
+.page.home-page { background:#f3f3f3; background:var(--st-toolbar); }
+.tool-header .tool-button, .game-header .tool-button, .tool-button, .result-action:not(.app-close), .number-key, .card-button, .letter-button, .reading-choice, .answer-choice { border-radius:10px; }
+.tool-header .tool-button, .game-header .tool-button, .tool-button { border:1px solid #777; background:#e6e6e6; color:#1c1c1c; box-shadow:0 1px 0 #aaa; font-weight:600; }
+.tool-header #new-round, .tool-header #new-puzzle, .game-header #new-round { border-radius:10px; border-color:#777; background:#e6e6e6; box-shadow:0 1px 0 #aaa; }
+.tool-header .tool-button:disabled, .game-header .tool-button:disabled, .tool-button:disabled { background:#ededed; border-color:#aaa; color:#777; box-shadow:none; }
+.tool-header .quiet-select-trigger, .quiet-select-menu, .tool-header select { border-radius:10px; border-color:#777; }
+.quiet-select-menu { padding:4px; box-shadow:0 2px 0 #aaa; }
+.quiet-select-option { border-radius:6px; }
+.tool-header .app-close, .game-header .app-close { border:0; background:transparent; color:#1c1c1c; box-shadow:none; }
+.answer-choice, .reading-choice, .card-button, .number-key, .letter-button { border-radius:10px; }
+.result-dialog { border-radius:12px; }
+.result-action:not(.app-close) { border-radius:10px; }
+.notes-list-panel { background:#e2e2e2; }
+.notebook-item[aria-current="true"], .notebook-item.active, .section-heading[aria-current="true"], .section-heading.active { background:#fff; }
+.note-tools { background:#f8f8f8; }
+.note-tools .note-tool[aria-pressed="true"] { background:#1c1c1c; border-color:#1c1c1c; color:#fff; box-shadow:none; }
+.icon-tile { border:1px solid #777; border-radius:14px; background:#fff; box-shadow:0 2px 0 #d1d1d1; }
+.app-icon { fill:none; stroke:currentColor; stroke-width:1.25; stroke-linecap:round; stroke-linejoin:round; }
+
+/* App headers use the same compact 44px icon controls and clear exit divider. */
+.tool-header.tool-header, .game-header.game-header { min-height:72px; padding:12px 16px; }
+.tool-header .tool-actions > .tool-button, .tool-header .sudoku-help, .game-header .game-actions > .tool-button, .notebook-heading #show-notes { display:inline-flex; align-items:center; justify-content:center; flex:none; width:44px; min-width:44px; height:44px; min-height:44px; margin:0; padding:0; font-size:0; line-height:1; border-radius:10px; }
+.tool-header .tool-actions > .tool-button + .tool-button, .game-header .game-actions > .tool-button + .tool-button { margin-left:4px; }
+.tool-header .tool-actions > .tool-button .button-icon, .tool-header .sudoku-help .button-icon, .game-header .game-actions > .tool-button .button-icon, .notebook-heading #show-notes .button-icon { display:block; width:20px; height:20px; margin:0; stroke-width:1.8; }
+.tool-header .tool-actions > .tool-button:before { width:20px; height:20px; margin:0; background-size:20px; }
+.tool-header .tool-actions > .tool-button:disabled:before { opacity:.4; }
+.tool-header .tool-controls .app-exit-group, .game-header .game-actions .app-exit-group { margin-left:8px; padding-left:8px; border-left:1px solid #777; }
+.tool-header .app-exit-group .app-close, .game-header .app-exit-group .app-close { width:44px; min-width:44px; height:44px; min-height:44px; padding:12px; }
+.tool-header .sudoku-help { margin-left:4px; border:0; background:transparent; box-shadow:none; }
+.tool-header #pen { position:relative; }
+.tool-header #pen:after { content:''; position:absolute; right:5px; bottom:5px; width:3px; height:3px; border-radius:50%; background:#1c1c1c; }
+.tool-header #pen.pen-width-1:after { width:5px; height:5px; }
+.tool-header #pen.pen-width-2:after { width:7px; height:7px; }
+.game-header .button-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+@media (min-width:540px) {
+ .tool-header .tool-controls, .tool-header .tool-actions, .game-header .game-actions { display:flex; align-items:center; }
+ .tool-header .tool-title { margin-right:12px; }
+ .tool-header .quiet-select-wrap { margin-right:4px; }
+}
+@media (max-width:539px) {
+ .tool-header.tool-header, .game-header.game-header { display:flex; flex-wrap:wrap; align-items:center; padding:10px 12px; }
+ .tool-header .tool-title, .game-header .game-heading, .notebook-header .notebook-heading { flex:none; width:100%; min-height:0; margin:0 0 8px; padding:0; }
+ .tool-header .tool-controls, .game-header .game-tools { position:static; display:flex; align-items:center; width:100%; text-align:left; }
+ .tool-header .tool-actions, .game-header .game-actions { display:flex; align-items:center; flex:1; width:auto; min-width:0; justify-content:flex-start; }
+ .tool-header .quiet-select-wrap, .sums-header .quiet-select-wrap[data-for="level"] { flex:1; width:0; min-width:0; margin-right:4px; }
+ .tool-header .tool-controls .app-exit-group { position:static; margin-left:4px; padding-left:4px; }
+ .tool-header .tool-controls .app-exit-group .app-close { position:static; }
+ .game-header .game-heading { margin-bottom:8px; }
+ .game-header .game-actions .app-exit-group { margin-left:auto; }
+}
+/* Size reset and undo by the same target even when app-specific rules exist. */
+.tool-header .tool-actions #new-round, .tool-header .tool-actions #new-puzzle,
+.tool-header .tool-actions #undo, .game-header .game-actions #new-round,
+.game-header .game-actions #undo { width:44px; min-width:44px; height:44px; min-height:44px; padding:0; }
+.notebook-heading #show-notes { display:none; }
+@media (max-width:899px) {
+  .show-editor .notebook-heading #show-notes { display:inline-flex; }
+}
+
+/* Header pseudo-icons share the same artwork as the Still icon library. */
+.tool-header .icon-add::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%205v14M5%2012h14%22%2F%3E%3C%2Fsvg%3E"); }
+.tool-header .icon-pen::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
+.tool-header .icon-undo::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%206%204%2011l5%205M4%2011h9a6%206%200%200%201%206%206%22%2F%3E%3C%2Fsvg%3E"); }
+.tool-header .icon-clear::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M9%206V3h6v3M6%206l1%2015h10l1-15M10%2010v7m4-7v7%22%2F%3E%3C%2Fsvg%3E"); }
+
+
+/* Workspace-style app bars: quiet actions on a compact, white header. */
+.tool-header.tool-header, .game-header.game-header, .launcher-header { min-height:52px; padding:4px 8px 4px 16px; background:#f3f3f3; background:var(--st-toolbar); border-bottom:1px solid #777; }
+.tool-header .tool-title, .game-header .game-heading h1, .launcher-header h1 { font-size:20px; line-height:26px; font-weight:600; letter-spacing:0; }
+.tool-header .tool-actions > .tool-button,
+.tool-header .tool-actions #new-round, .tool-header .tool-actions #new-puzzle,
+.tool-header .tool-actions #undo, .tool-header .sudoku-help,
+.game-header .game-actions > .tool-button, .game-header .game-actions #new-round,
+.notebook-heading #show-notes { border:0; background:transparent; color:#1c1c1c; box-shadow:none; }
+.tool-header .tool-actions > .tool-button:disabled, .tool-header .tool-actions #undo:disabled,
+.game-header .game-actions > .tool-button:disabled { background:transparent; color:#999; box-shadow:none; }
+.tool-header .quiet-select-wrap .quiet-select-trigger,
+.sums-header .quiet-select-wrap .quiet-select-trigger,
+.tool-header .tool-actions select { min-height:44px; height:44px; border:0; border-radius:0; background:transparent; color:#1c1c1c; box-shadow:none; font-size:16px; }
+.tool-header .tool-actions > .tool-button:active:not(:disabled),
+.tool-header .sudoku-help:active:not(:disabled),
+.game-header .game-actions > .tool-button:active:not(:disabled),
+.notebook-heading #show-notes:active:not(:disabled) { background:#e6e6e6; box-shadow:none; }
+@media (max-width:539px) {
+ .tool-header.tool-header, .game-header.game-header { padding:4px 8px 4px 12px; }
+ .tool-header .tool-title, .game-header .game-heading, .notebook-header .notebook-heading { flex:0 0 auto; width:auto; margin:0 8px 0 0; }
+ .tool-header .tool-controls, .game-header .game-tools { flex:0 1 auto; width:auto; max-width:100%; margin-left:auto; }
+ .tool-header .tool-actions, .game-header .game-actions { flex:0 1 auto; }
+ .tool-header .quiet-select-wrap, .sums-header .quiet-select-wrap[data-for="level"] { flex:0 1 105px; width:105px; }
+ .tool-header .quiet-select-wrap[data-for="level"], .tool-header .quiet-select-wrap[data-for="group"] { flex-basis:90px; width:90px; }
+ .game-header .game-actions .app-exit-group { margin-left:8px; }
+}
+
+/* Quiet dropdown labels and chevrons stay together; opening shows a pressed state. */
+.quiet-select-wrap .quiet-select-trigger { display:flex; align-items:center; justify-content:flex-start; width:auto; min-height:44px; padding:0 10px; border:0; border-radius:var(--st-radius, 10px); background:transparent; color:var(--st-ink, #1c1c1c); box-shadow:none; font:inherit; }
+.quiet-select-trigger .plan-dropdown-caret { margin-left:8px; }
+.quiet-select-wrap .quiet-select-trigger[aria-expanded="true"],
+.quiet-select-wrap .quiet-select-trigger:active { background:#c5c5c5; }
+.tool-header .tool-actions .quiet-select-wrap,
+.sums-header .tool-actions .quiet-select-wrap[data-for="level"] { flex:0 1 auto; width:auto; min-width:0; }
+.tool-header .quiet-select-wrap .quiet-select-trigger,
+.sums-header .quiet-select-wrap .quiet-select-trigger { justify-content:flex-start; width:auto; max-width:100%; padding:0 10px; border-radius:10px; }
+.tool-header .quiet-select-trigger .plan-dropdown-caret { margin-left:8px; }
+.tool-header .quiet-select-wrap .quiet-select-trigger[aria-expanded="true"],
+.sums-header .quiet-select-wrap .quiet-select-trigger[aria-expanded="true"],
+.tool-header .quiet-select-wrap .quiet-select-trigger:active { background:#c5c5c5; }
+
+/* Consistent momentary feedback without adding focus outlines. */
+button:not(:disabled):active,
+.tool-header .tool-actions > .tool-button:active:not(:disabled),
+.tool-header .tool-actions #new-round:active:not(:disabled),
+.tool-header .tool-actions #new-puzzle:active:not(:disabled),
+.tool-header .sudoku-help:active:not(:disabled),
+.game-header .game-actions > .tool-button:active:not(:disabled),
+.notebook-heading #show-notes:active:not(:disabled),
+.tool-header .quiet-select-wrap .quiet-select-trigger:active,
+.sums-header .quiet-select-wrap .quiet-select-trigger:active {
+  background:#c5c5c5; color:#1c1c1c; box-shadow:none; transform:none;
+}
+button.result-primary:not(:disabled):active,
+button.check-word:not(:disabled):active,
+button.note-tool[aria-pressed="true"]:not(:disabled):active,
+button.sudoku-cell.selected:not(:disabled):active,
+button.card-button.chosen:not(:disabled):active {
+  background:#555; color:#fff; -webkit-text-fill-color:#fff;
+}
+.app-close:active, .launcher-footer .launcher-exit:active { background:#c5c5c5; border-radius:10px; box-shadow:none; }
+.app-link:active .icon-tile { background:#c5c5c5; box-shadow:none; transform:none; }
+
+/* Game choices sit beside the title; actions remain grouped at the far edge. */
+.tool-header .tool-controls { flex:1 1 auto; min-width:0; }
+.tool-header .tool-actions { flex:1 1 auto; min-width:0; }
+.tool-header .tool-actions .quiet-select-wrap + .tool-button,
+.tool-header .tool-actions > .tool-button:first-child { margin-left:auto; }
+@media (max-width:539px) {
+  .tool-header .tool-controls { flex:1 1 auto; min-width:0; }
+  .tool-header .tool-actions { flex:1 1 auto; min-width:0; }
+}
+
+/* Keep content scrollable without showing scrollbar chrome. */
+html, body, * { scrollbar-width:none; -ms-overflow-style:none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display:none; width:0; height:0; }
+
+/* Manual rotation uses the whole browser area, as in Together on Kindle. */
+body[data-little-rotation="left"], body[data-little-rotation="right"] {
+  position:absolute; width:var(--little-view-width); height:var(--little-view-height);
+  transform-origin:top left; -webkit-transform-origin:top left;
+}
+body[data-little-rotation="left"] { left:0; top:var(--little-screen-height); transform:rotate(-90deg); -webkit-transform:rotate(-90deg); }
+body[data-little-rotation="right"] { left:var(--little-screen-width); top:0; transform:rotate(90deg); -webkit-transform:rotate(90deg); }
+body[data-little-rotation="left"], body[data-little-rotation="right"] { overflow:auto; }
+
+/* A shared square exit control, flush with every app bar's top and right edges. */
+.tool-header.tool-header, .game-header.game-header {
+  position:relative; display:flex; flex-wrap:nowrap; align-items:center;
+  height:52px; min-height:52px; padding:0 52px 0 16px;
+  border-bottom:0; box-shadow:inset 0 -1px 0 #777;
+}
+.tool-header .tool-controls .app-exit-group, .game-header .game-actions .app-exit-group {
+  position:absolute; top:0; right:0; display:flex; width:52px; height:52px;
+  margin:0; padding:0; border:0;
+}
+.tool-header .app-exit-group .app-close, .game-header .app-exit-group .app-close {
+  position:static; display:flex; align-items:center; justify-content:center;
+  width:52px; min-width:52px; height:52px; min-height:52px;
+  margin:0; padding:0; border:0; border-left:1px solid #777; border-radius:0;
+}
+.tool-header .app-exit-group .app-close:active, .game-header .app-exit-group .app-close:active { border-radius:0; }
+/* Header icon actions share Close's full-height square touch area. Keep
+   dropdowns content-sized and canvas toolbars independent of app-bar actions. */
+.tool-header .tool-button, .tool-header .sudoku-help,
+.game-header .tool-button {
+  box-sizing:border-box; flex:0 0 52px;
+  width:52px !important; min-width:52px !important; max-width:52px;
+  height:52px !important; min-height:52px !important; max-height:52px;
+  margin:0 !important; padding:0 !important; border-radius:0 !important;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.tool-header .tool-controls, .tool-header .tool-actions,
+.game-header .game-actions { column-gap:0; }
+@media (max-width:539px) {
+  .tool-header.tool-header, .game-header.game-header { padding-left:12px; }
+}

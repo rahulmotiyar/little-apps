@@ -1,0 +1,56 @@
+/* Source Sans 3 by Adobe; SIL OFL 1.1. Bundled locally for offline use. */
+@font-face { font-family:"Still Sans";src:url("fonts/SourceSans3-Regular.woff") format("woff");font-weight:400;font-style:normal;font-display:swap; }
+@font-face { font-family:"Still Sans";src:url("fonts/SourceSans3-Semibold.woff") format("woff");font-weight:600;font-style:normal;font-display:swap; }
+@font-face { font-family:"Still Sans";src:url("fonts/SourceSans3-Bold.woff") format("woff");font-weight:700;font-style:normal;font-display:swap; }
+:root {
+  --st-control-gap:4px;
+  --st-page-inset:16px;
+  --st-menu-inset:4px;
+  --st-paper: #ffffff;
+  --st-canvas: #f7f7f2;
+  --st-toolbar: #f3f3f3;
+  --st-sidebar: #eef0e9;
+  --st-ink: #20231f;
+  --st-muted: #596057;
+  --st-line: #7f877a;
+  --st-divider: #d6dad1;
+  --st-soft: #eef0e9;
+  --st-pressed: #e1e5da;
+  --st-accent: #a83f23;
+  --st-accent-hover: #8b321c;
+  --st-accent-soft: #f7ebe3;
+  --st-disabled: #e8eae4;
+  --st-disabled-ink: #666d62;
+  --st-font: "Still Sans", "Neue Frutiger", "Frutiger", "Noto Sans", sans-serif;
+  --st-caption: 14px;
+  --st-body: 20px;
+  --st-label: 16px;
+  --st-title: 20px;
+  --st-heading: 28px;
+  --st-display: 28px;
+  --st-line-height: 1.5;
+  --st-space-1: 4px;
+  --st-space-2: 8px;
+  --st-space-3: 12px;
+  --st-space-4: 16px;
+  --st-space-5: 24px;
+  --st-space-6: 32px;
+  --st-space-7: 48px;
+  --st-space-8: 64px;
+  --st-radius: 10px;
+  --st-radius-panel: 12px;
+  --st-target: 44px;
+  --st-shadow: 0 1px 0 #aeb5a6;
+  --st-shadow-accent: 0 2px 0 #732b19;
+  --st-shadow-panel: 0 3px 0 #dce0d5;
+}
+/* Monochrome is an explicit device profile, not merely a grayscale filter. */
+[data-display="mono"] {
+  --st-paper:#fff; --st-canvas:#f8f8f8; --st-toolbar:#f3f3f3; --st-sidebar:#e2e2e2; --st-ink:#1c1c1c;
+  --st-muted:#525252; --st-line:#777; --st-divider:#d2d2d2;
+  --st-soft:#e6e6e6; --st-pressed:#ccc; --st-accent:#1c1c1c;
+  --st-accent-hover:#444; --st-accent-soft:#ededed;
+  --st-disabled:#ededed; --st-disabled-ink:#666;
+  --st-shadow:0 1px 0 #aaa; --st-shadow-accent:0 1px 0 #555; --st-shadow-panel:0 2px 0 #d1d1d1;
+}
+[data-type="frutiger"] { --st-font:"Neue Frutiger World", "Neue Frutiger", "Frutiger", "Still Sans", "Noto Sans", sans-serif; }

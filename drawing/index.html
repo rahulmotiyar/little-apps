@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Draw</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../productivity.css">
+  <link rel="stylesheet" href="styles.css?v=20261121-quiet-status">
+  <link rel="stylesheet" href="../controls.css">
+  <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+  <link rel="stylesheet" href="toolbar.css?v=20261121-manual-rotation-v2">
+</head>
+<body>
+  <div class="tool-page drawing-page">
+    <header class="tool-header">
+      <h1 class="tool-title">Draw</h1>
+      <div class="drawing-file-wrap">
+        <button id="file-button" class="drawing-file-button" type="button" aria-expanded="false" aria-controls="file-menu" aria-label="Current drawing; open drawings"><span id="file-name">Untitled drawing</span><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+        <section class="drawing-file-menu" id="file-menu" aria-label="Drawings" hidden>
+          <label for="file-rename">Drawing name</label>
+          <div class="drawing-rename-row"><input id="file-rename" maxlength="80" autocomplete="off"><button id="file-rename-save" type="button">Rename</button></div>
+          <div class="drawing-file-menu-heading">Your drawings</div>
+          <div id="file-list" class="drawing-file-list"></div>
+          <button id="file-new" class="drawing-new-file" type="button"><span aria-hidden="true">＋</span> New drawing</button>
+        </section>
+      </div>
+      <div class="tool-controls">
+        <span class="app-exit-group"><a class="close-app app-close" href="../" aria-label="Exit Draw"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+      </div>
+    </header>
+    <main>
+      <noscript><p>Turn on JavaScript in your browser to use the drawing pad.</p></noscript>
+      <div class="drawing-paper" id="paper">
+        <canvas id="drawing" width="600" height="600" aria-label="Drawing pad. Draw with one finger or a mouse.">This browser does not support the drawing pad.</canvas>
+        <div class="drawing-toolbar" id="drawing-toolbar" role="toolbar" aria-label="Drawing tools" aria-orientation="vertical" data-layout="vertical">
+          <button class="tool-button toolbar-handle" id="toolbar-handle" type="button" aria-label="Move drawing toolbar" title="Drag to move toolbar"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h.01M12 9h.01M19 9h.01M5 15h.01M12 15h.01M19 15h.01" stroke-width="3"/></svg></button>
+          <button class="tool-button" id="pen" type="button" aria-label="Pen" aria-pressed="true" aria-expanded="false" aria-controls="pen-options" data-style="sharp" title="Pen" disabled><svg class="button-icon pen-style-icon pencil-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.8L16 4.5a2.1 2.1 0 0 1 3 3L8.3 18.2 4 20zm9.8-13.3 3.5 3.5"/></svg><svg class="button-icon pen-style-icon sharp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 7 12l9-9 5 5-9 9-8 3ZM7 12l5 5M4 20l5.5-5.5"/></svg><svg class="button-icon pen-style-icon brush-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14 17.5 4a2 2 0 0 1 2.8 2.8L13 16M10 14c-3 0-3 2-3 3.5S6 20 4 20c4 2 9 0 9-4l-3-2z"/></svg></button>
+          <button class="tool-button" id="width" type="button" aria-label="Pen width" aria-expanded="false" aria-controls="width-options" title="Pen width" disabled><svg class="button-icon size-icon ink-size-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/></svg><svg class="button-icon size-icon eraser-size-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3" transform="rotate(45 12 12)"/></svg></button>
+          <button class="tool-button" id="eraser" type="button" aria-label="Eraser" aria-pressed="false" title="Eraser" disabled><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14 13 5a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L10 20H7zM9 9l6 6M10 20h10"/></svg></button>
+          <button class="tool-button" id="move-tool" type="button" aria-label="Move canvas" aria-pressed="false" title="Move canvas" disabled><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11V5a1.5 1.5 0 0 1 3 0v5-7a1.5 1.5 0 0 1 3 0v7-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v7c0 3-2 6-5 6h-3c-2 0-3-1-4-3l-3-4a1.5 1.5 0 0 1 2-2z"/></svg></button>
+          <button class="tool-button" id="zoom" type="button" aria-label="Zoom canvas" title="Zoom canvas" disabled><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 5 5M10 7v6M7 10h6"/></svg></button>
+          <span class="drawing-tool-divider drawing-actions-start" aria-hidden="true"></span>
+          <button class="tool-button icon-undo" id="undo" type="button" aria-label="Undo" title="Undo" disabled>Undo</button>
+          <button class="tool-button" id="redo" type="button" aria-label="Redo" title="Redo" disabled><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6 5 5-5 5M20 11h-9a6 6 0 0 0-6 6"/></svg></button>
+          <span class="drawing-tool-divider" aria-hidden="true"></span>
+          <button class="tool-button" id="clear" type="button" aria-label="Clear drawing" title="Clear drawing" disabled><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13.2 9.3 3.5-6a1.8 1.8 0 0 1 3.1 1.8l-3.7 6.2M13.2 9.3c2.2.1 3.9 1.6 3.6 3.7L14 21c-3.6-1.1-6.6-2.9-9-5.5 3-.5 5-2.6 6.6-5.2.4-.7.9-1 1.6-1ZM10.7 11l5.7 3M8 17.8l1-1.2M11.5 19.5l1-1.3"/><circle cx="6" cy="8.5" r=".7" fill="currentColor" stroke="none"/><circle cx="8.7" cy="6" r=".7" fill="currentColor" stroke="none"/></svg></button>
+          <span class="drawing-tool-divider" aria-hidden="true"></span>
+          <button id="file-share" style="display:none" class="tool-button" type="button" aria-label="Share drawing" title="Share drawing"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg></button>
+        </div>
+        <div class="draw-subtools pen-subtools" id="pen-options" role="group" aria-label="Pen type" hidden>
+          <button type="button" id="pen-pencil" aria-pressed="false"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.8L16 4.5a2.1 2.1 0 0 1 3 3L8.3 18.2 4 20zm9.8-13.3 3.5 3.5"/></svg>Pencil</button>
+          <button type="button" id="pen-sharp" aria-pressed="true"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 7 12l9-9 5 5-9 9-8 3ZM7 12l5 5M4 20l5.5-5.5"/></svg>Sharp pen</button>
+          <button type="button" id="pen-brush" aria-pressed="false"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14 17.5 4a2 2 0 0 1 2.8 2.8L13 16M10 14c-3 0-3 2-3 3.5S6 20 4 20c4 2 9 0 9-4l-3-2z"/></svg>Brush</button>
+        </div>
+        <div class="draw-subtools width-subtools" id="width-options" role="group" aria-label="Tool size" hidden>
+          <button type="button" id="width-fine" aria-pressed="false">Fine</button>
+          <button type="button" id="width-medium" aria-pressed="true">Medium</button>
+          <button type="button" id="width-thick" aria-pressed="false">Thick</button>
+        </div>
+        <div id="share-dialog" class="share-overlay" role="dialog" aria-modal="true" aria-labelledby="share-heading" hidden>
+          <div class="share-card"><h2 id="share-heading">Share drawing</h2><p id="share-message">Preparing a link…</p><canvas id="share-qr" role="img" aria-label="QR code for the share link" hidden></canvas><a id="share-link" target="_blank" rel="noopener" hidden></a><button id="share-close" type="button">Done</button></div>
+        </div>
+        <div class="drawing-notices">
+          <p class="tool-status" id="drawing-status" role="status" aria-live="polite" style="display:none"></p>
+          <p class="drawing-warning" id="storage-warning" role="status" style="display:none">This browser cannot save your drawing. Keep this page open.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../orientation.js?v=20261121-display-preferences"></script>
+  <script src="qr-vendor.js?v=20261121-qr"></script>
+  <script src="files.js?v=20261121-file-menu"></script>
+  <script src="app.js?v=20261121-manual-rotation-v2"></script>
+  <script src="toolbar-move.js?v=20261121-manual-rotation-v2"></script>
+  <script src="../dropdowns.js?v=20261121-manual-rotation-v2"></script>
+</body>
+</html>

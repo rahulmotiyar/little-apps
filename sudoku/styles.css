@@ -1,0 +1,133 @@
+.sudoku-header .tool-controls { white-space: nowrap; }
+.sudoku-header .tool-title { font-size: 28px; line-height: 1.2; }
+.sudoku-actions { white-space: nowrap; }
+#difficulty { display: inline-block; vertical-align: middle; min-height: 48px; max-width: 180px; padding: 10px 8px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-size: 16px; }
+#difficulty:focus { outline: none; box-shadow: none; }
+.sudoku-actions .tool-button { margin-left: 8px; }
+.sudoku-exit { display: inline-block; vertical-align: middle; margin-left: 10px; padding-left: 12px; border-left: 1px solid #000; }
+.sudoku-exit .close-app { margin-left: 0; }
+.sudoku-layout { width: 100%; }
+.board-area { padding: 12px; }
+.sudoku-board-shell { margin: 0 auto; width: 100%; }
+.sudoku-board { width: 100%; table-layout: fixed; border-collapse: collapse; border: 2px solid #000; }
+.sudoku-board td { padding: 0; border: 1px solid #000; }
+.sudoku-board td.box-right { border-right: 3px solid #000; }
+.sudoku-board td.box-bottom { border-bottom: 3px solid #000; }
+.sudoku-cell { display: block; width: 100%; height: 70px; padding: 0; border: 0; border-radius: 0; color: #000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 32px; font-weight: normal; line-height: 1; text-align: center; -webkit-appearance: none; cursor: pointer; }
+.sudoku-cell:disabled { opacity: 1; color: #000; -webkit-text-fill-color: #000; cursor: default; }
+.sudoku-cell.given { font-weight: bold; }
+.sudoku-cell.selected { background: #000; color: #fff; -webkit-text-fill-color: #fff; }
+.puzzle-tools { padding: 12px; }
+.puzzle-rule { margin: 0 0 12px; font-size: 17px; text-align: center; }
+.key-row { display: table; table-layout: fixed; width: 100%; border-spacing: 5px 0; margin: 0 0 6px; }
+.key-slot { display: table-cell; }
+.number-key { width: 100%; min-height: 50px; padding: 8px 2px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-size: 23px; font-weight: bold; cursor: pointer; -webkit-appearance: none; }
+.number-key:disabled { border-color: #b8b8b8; background: #f2f2f2; color: #888; font-weight: normal; opacity: 1; cursor: default; }
+.clear-cell { display: block; width: 100%; margin: 0; }
+.puzzle-status { margin: 10px 0 0; min-height: 25px; font-size: 17px; text-align: center; }
+.sudoku-result { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 10; display: table; width: 100%; height: 100%; background: #fff; background: rgba(255,255,255,0.82); }
+.result-center { display: table-cell; vertical-align: middle; padding: 16px; text-align: center; }
+.result-dialog { display: inline-block; width: 100%; max-width: 380px; padding: 26px; border: 2px solid #000; border-radius: 12px; background: #fff; }
+.result-stars { margin-bottom: 12px; line-height: 1; }
+.result-star { margin: 0 8px; fill: #fff; stroke: #000; stroke-width: 1.5; stroke-linejoin: round; vertical-align: middle; }
+.result-star-big { fill: #000; }
+.result-title { margin: 0 0 8px; font-size: 52px; line-height: 1.1; letter-spacing: -1.5px; }
+.result-copy { margin: 0 0 22px; }
+.result-action { display: block; width: 100%; min-height: 54px; margin: 12px 0 0; padding: 12px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-weight: bold; line-height: 1.3; text-align: center; text-decoration: none; cursor: pointer; -webkit-appearance: none; }
+.result-primary { background: #000; color: #fff; }
+@media (orientation: landscape) and (min-width: 760px) {
+  .sudoku-layout { display: table; table-layout: fixed; }
+  .board-area { display: table-cell; width: 65%; vertical-align: top; padding: 12px; }
+  .puzzle-tools { display: table-cell; width: 35%; vertical-align: middle; padding: 18px 22px; }
+  .number-key { min-height: 58px; }
+}
+@media (max-width: 640px) {
+  .sudoku-header .tool-controls { white-space: normal; }
+  .sudoku-header .tool-actions { display: -webkit-flex; display: flex; width: 100%; }
+  #difficulty { -webkit-flex: 1; flex: 1; min-width: 0; max-width: none; }
+  .sudoku-actions .tool-button { padding-left: 8px; padding-right: 8px; }
+  .sudoku-actions #undo { -webkit-flex: 0; flex: 0; }
+  .sudoku-exit { display: inline; margin: 0; padding: 0; border: 0; }
+}
+@media (max-width: 380px) {
+  .sudoku-header .tool-actions { display: block; }
+  #difficulty { display: block; width: 100%; margin-bottom: 8px; }
+  .sudoku-actions .tool-button { width: 48%; margin-left: 0; }
+  .sudoku-actions .tool-button + .tool-button { margin-left: 8px; }
+}
+@media (max-height: 480px) {
+  .result-dialog { padding: 18px; }
+  .result-stars { margin-bottom: 8px; }
+  .result-star { width: 22px; height: 22px; }
+  .result-star-big { width: 28px; height: 28px; }
+  .result-title { font-size: 46px; }
+  .result-copy { margin-bottom: 16px; font-size: 16px; }
+  .result-action { min-height: 48px; padding: 10px; }
+}
+
+/* A centred puzzle and a compact number/eraser pad. */
+.sudoku-page { min-height:var(--little-view-height, 100vh); display:flex; flex-direction:column; }
+.sudoku-page > main { flex:1; display:flex; align-items:center; justify-content:center; padding:24px; }
+.sudoku-layout { max-width:960px; }
+.board-area { padding:0; }
+.puzzle-tools { padding:20px 0 0; max-width:620px; margin:0 auto; }
+.sudoku-board { border-collapse:separate; border-spacing:6px; border:0; }
+.sudoku-board td, .sudoku-board td.box-right, .sudoku-board td.box-bottom { border:0; }
+.sudoku-cell { border:1px solid #aaa; border-radius:8px; }
+.box-right .sudoku-cell { border-right:3px solid #444; }
+.box-bottom .sudoku-cell { border-bottom:3px solid #444; }
+.sudoku-cell.given { background:#f3f3f3; }
+.sudoku-cell.selected { background:#000; }
+.number-controls { display:flex; align-items:flex-start; }
+.keypad { flex:1; min-width:0; }
+.key-row { display:flex; border-spacing:0; margin-bottom:8px; }
+.key-row:last-child { margin-bottom:0; }
+.key-slot { display:block; flex:1; min-width:0; }
+.key-slot + .key-slot { margin-left:8px; }
+.number-key { min-height:56px; }
+.sudoku-page #clear-cell { flex:none; width:56px; min-height:56px; margin:0 0 0 12px; padding:16px; }
+#clear-cell .button-icon { display:block; margin:0; width:20px; height:20px; }
+.sudoku-header #undo { width:48px; min-width:48px; padding:13px; }
+.sudoku-header #undo:before { margin:0; }
+.sudoku-header .sudoku-help { flex:none; width:48px; min-width:48px; padding:13px; margin-left:8px; border:0; background:transparent; }
+.sudoku-help .button-icon { display:block; margin:0; width:22px; height:22px; }
+.sudoku-header .quiet-select-wrap { width:140px; }
+.sudoku-help-overlay { position:fixed; z-index:300; top:0; right:0; bottom:0; left:0; box-sizing:border-box; padding:24px; background:rgba(255,255,255,.85); align-items:center; justify-content:center; }
+.sudoku-help-dialog { position:relative; box-sizing:border-box; width:100%; max-width:518px; max-height:calc(100vh - 48px); max-height:calc(var(--little-view-height, 100vh) - 48px); overflow:auto; padding:28px; border:1px solid #777; border-radius:8px; background:#fff; font-size:17px; line-height:1.5; }
+body[data-little-rotation="left"] .sudoku-help-overlay,
+body[data-little-rotation="right"] .sudoku-help-overlay { position:absolute; }
+.sudoku-help-dialog h2 { margin:0 40px 20px 0; font-size:28px; }
+.sudoku-help-dialog li { margin-bottom:12px; }
+.sudoku-help-dialog ol { padding-left:22px; }
+.sudoku-help-dialog .app-close { position:absolute; top:8px; right:8px; cursor:pointer; }
+@media (orientation:landscape) and (min-width:760px) {
+ .sudoku-layout { display:flex; align-items:center; }
+ .board-area { display:block; width:68%; padding:0; }
+ .puzzle-tools { display:block; width:32%; padding:0 0 0 24px; }
+}
+@media (max-width:539px) {
+ .sudoku-header .tool-actions { display:flex; width:auto; }
+ .sudoku-header .tool-controls { display:flex; align-items:center; }
+ .sudoku-header .quiet-select-wrap { flex:1; width:130px; }
+ .sudoku-header .sudoku-actions .tool-button { flex:none; width:48px; margin-bottom:0; }
+ .sudoku-header .close-app { position:absolute; }
+ .sudoku-page > main { padding:16px; }
+}
+
+/* Keep the familiar connected grid, rounded only at its outer edge. */
+.sudoku-page > main { align-items:flex-start; }
+.sudoku-layout { max-width:none; }
+.sudoku-board-shell { border:2px solid #000; border-radius:8px; overflow:hidden; }
+.sudoku-board { border-collapse:collapse; border-spacing:0; border-style:hidden; }
+.sudoku-board td, .sudoku-board td.box-right, .sudoku-board td.box-bottom { border:1px solid #000; }
+.sudoku-board td.box-right { border-right:3px solid #000; }
+.sudoku-board td.box-bottom { border-bottom:3px solid #000; }
+.sudoku-board .sudoku-cell { border:0; border-radius:0; background:#fff; }
+.sudoku-board .sudoku-cell.selected { background:#000; }
+.puzzle-tools { max-width:none; margin-top:20px; padding-top:20px; border-top:1px solid #ccc; }
+@media (orientation:landscape) and (min-width:760px) {
+ .puzzle-tools { margin-top:0; padding-top:0; padding-left:24px; border-top:0; border-left:1px solid #ccc; }
+}
+body.little-wide-landscape .sudoku-layout { display:flex; align-items:center; }
+body.little-wide-landscape .board-area { display:block; width:68%; padding:0; }
+body.little-wide-landscape .puzzle-tools { display:block; width:32%; margin-top:0; padding:0 0 0 24px; border-top:0; border-left:1px solid #ccc; }

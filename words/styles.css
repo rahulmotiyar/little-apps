@@ -1,0 +1,86 @@
+.words-page { min-height: var(--little-view-height, 100vh); display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+.words-header { -webkit-flex: none; flex: none; }
+.words-header .tool-title { font-size: 28px; line-height: 34px; font-weight: bold; }
+.words-actions { white-space: nowrap; }
+.words-actions select { display: inline-block; vertical-align: middle; min-height: 48px; padding: 10px 12px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-size: 17px; }
+.words-actions select:focus { outline: none; box-shadow: none; }
+.words-actions select + select, .words-actions .tool-button { margin-left: 8px; }
+.words-exit { display: inline-block; vertical-align: middle; margin-left: 10px; padding-left: 12px; border-left: 1px solid #000; }
+.words-exit .close-app { margin-left: 0; }
+.words-main { width: 100%; padding: 16px 24px; -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+.round-progress { text-align: center; }
+.stars { line-height: 1; }
+.progress-star { display: inline-block; width: 32px; height: 32px; margin: 0 5px; fill: #fff; stroke: #000; stroke-width: 1.5; stroke-linejoin: round; }
+.progress-star.earned { fill: #000; }
+.progress-copy { margin: 6px 0 0; font-size: 17px; }
+.learning-panel { width: 100%; max-width: 960px; margin: auto; padding: 26px 0; }
+.story-title { margin: 0 0 16px; font-size: 28px; line-height: 1.3; }
+.story { margin: 0 0 30px; font-size: 30px; line-height: 1.55; white-space: pre-line; }
+.read-question { margin: 0 0 16px; font-size: 24px; line-height: 1.4; }
+.reading-choice { display: block; width: 100%; min-height: 58px; margin-top: 10px; padding: 12px 18px; border: 2px solid #000; border-radius: 12px; background: #fff; color: #000; font: inherit; font-size: 24px; line-height: 1.35; text-align: left; cursor: pointer; -webkit-appearance: none; }
+.reading-choice:disabled, .letter-button:disabled { border-color: #b8b8b8; background: #f2f2f2; color: #888; opacity: 1; cursor: default; }
+.reading-choice.correct, .reading-choice.correct:disabled { background: #000; color: #fff; border-color: #000; }
+.spell-panel { text-align: center; }
+.spell-prompt { margin: 0 0 12px; font-size: 20px; }
+.spell-picture { display: block; width: 120px; height: 90px; margin: 0 auto 16px; }
+.spell-clue { margin: 0 0 20px; font-size: 28px; line-height: 1.45; }
+.word-slots { min-height: 68px; line-height: 1; }
+.word-slot { display: inline-block; vertical-align: top; width: 50px; min-height: 60px; margin: 0 3px 8px; padding: 10px 2px; border-bottom: 3px solid #000; font-size: 34px; font-weight: bold; line-height: 1.15; text-align: center; }
+.bank-instruction { margin: 18px 0 12px; font-size: 18px; }
+.letter-bank { max-width: 660px; margin: 0 auto; line-height: 1; }
+.letter-button { display: inline-block; min-width: 52px; min-height: 56px; margin: 5px; padding: 8px; border: 2px solid #000; border-radius: 10px; background: #fff; color: #000; font: inherit; font-size: 30px; font-weight: bold; line-height: 1.2; cursor: pointer; -webkit-appearance: none; }
+.spell-tools { margin: 20px 0 0; }
+.check-word { background: #000; color: #fff; }
+.answer-feedback { width: 100%; max-width: 960px; margin: 0 auto; text-align: center; }
+.feedback { min-height: 28px; margin: 0 0 12px; font-size: 20px; line-height: 1.4; }
+.words-result { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 10; display: table; width: 100%; height: 100%; background: #fff; background: rgba(255,255,255,.84); }
+.result-center { display: table-cell; vertical-align: middle; padding: 16px; text-align: center; }
+.result-dialog { display: inline-block; width: 100%; max-width: 410px; padding: 28px; border: 2px solid #000; border-radius: 16px; background: #fff; }
+.result-stars { font-size: 32px; letter-spacing: 3px; line-height: 1.3; }
+.result-title { margin: 12px 0 8px; font-size: 60px; line-height: 1.1; letter-spacing: -1.5px; }
+.result-copy { margin: 0 0 24px; font-size: 17px; }
+.result-action { display: block; width: 100%; min-height: 54px; margin: 12px 0 0; padding: 12px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-weight: bold; line-height: 1.3; text-align: center; text-decoration: none; cursor: pointer; -webkit-appearance: none; }
+.result-primary { background: #000; color: #fff; }
+@media (max-width: 640px) {
+  .words-actions { display: -webkit-flex; display: flex; width: 100%; }
+  .words-actions select { min-width: 0; padding-left: 8px; padding-right: 8px; -webkit-flex: 1; flex: 1; }
+  .words-actions .tool-button { -webkit-flex: none; flex: none; padding-left: 10px; padding-right: 10px; }
+  .words-exit { display: inline; margin: 0; padding: 0; border: 0; }
+  .words-main { padding: 12px 16px; }
+  .learning-panel { padding: 10px 0; }
+  .story { font-size: 27px; margin-bottom: 22px; }
+  .read-question { font-size: 22px; }
+  .reading-choice { font-size: 22px; }
+}
+@media (max-width: 480px) {
+  .words-actions { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
+  .words-actions .tool-button { width: 100%; margin: 8px 0 0; }
+  .words-main { padding-left: 12px; padding-right: 12px; }
+  .story-title { font-size: 25px; }
+  .story { font-size: 25px; line-height: 1.5; }
+  .read-question { font-size: 21px; }
+  .reading-choice { font-size: 20px; }
+  .spell-clue { font-size: 24px; }
+  .word-slots { min-height: 60px; }
+  .word-slot { width: 34px; min-height: 50px; margin-left: 2px; margin-right: 2px; padding-top: 8px; font-size: 28px; }
+  .letter-button { min-width: 48px; min-height: 52px; margin: 4px; font-size: 27px; }
+  .feedback { font-size: 18px; }
+}
+@media (max-height: 650px) and (min-width: 760px) {
+  .words-main { padding-top: 8px; }
+  .learning-panel { padding: 16px 0; }
+  .read-panel:not([hidden]), .spell-panel:not([hidden]) { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
+  .reading-text, .spell-riddle { width: 52%; padding-right: 28px; }
+  .reading-task, .spell-build { width: 48%; min-width: 0; }
+  .story { font-size: 25px; margin-bottom: 18px; }
+  .story-title { margin-bottom: 10px; }
+  .read-question { margin-bottom: 10px; }
+  .reading-choice { min-height: 52px; padding-top: 8px; padding-bottom: 8px; font-size: 22px; }
+  .spell-clue { margin-bottom: 16px; }
+  .bank-instruction { margin-top: 12px; }
+}
+body.little-short-landscape .words-main { padding-top:8px; }
+body.little-short-landscape .learning-panel { padding:16px 0; }
+body.little-short-landscape .read-panel:not([hidden]), body.little-short-landscape .spell-panel:not([hidden]) { display:flex; align-items:center; }
+body.little-short-landscape .reading-text, body.little-short-landscape .spell-riddle { width:52%; padding-right:28px; }
+body.little-short-landscape .reading-task, body.little-short-landscape .spell-build { width:48%; min-width:0; }

@@ -1,0 +1,13 @@
+.drawing-actions { white-space: nowrap; }
+.drawing-actions .tool-button { margin: 0 0 0 4px; }
+.drawing-actions .tool-button:first-child { margin-left: 0; }
+.drawing-paper { position: relative; width: 100%; margin: 0; background: #fff; }
+#drawing { display: block; width: 100%; height: 100%; background: #fff; cursor: crosshair; touch-action: none; -ms-touch-action: none; -webkit-user-select: none; user-select: none; }
+.drawing-notices { position: absolute; left: 8px; right: 8px; bottom: 8px; pointer-events: none; }
+.drawing-page .tool-status, .drawing-warning { margin: 4px 0 0; padding: 4px 8px; border: 1px solid #000; background: #fff; font-size: 14px; }
+@media (max-width: 360px) {
+  .drawing-actions .tool-button { padding-left: 8px; padding-right: 8px; }
+}
+
+/* Keep routine tool announcements available to assistive technology without covering the page. */
+.drawing-page .tool-status.is-quiet { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0, 0, 0, 0); border:0; white-space:nowrap; }

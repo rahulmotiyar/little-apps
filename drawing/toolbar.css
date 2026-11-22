@@ -1,0 +1,115 @@
+/* A movable toolbar, placed above the drawing surface. */
+.drawing-page .tool-header .tool-controls { justify-content:flex-end; }
+.drawing-toolbar { position:absolute; z-index:2; top:12px; right:12px; display:flex; flex-direction:row; align-items:center; padding:4px; border:1px solid #777; border-radius:12px; background:#fff; box-shadow:0 1px 0 #ccc; }
+.drawing-toolbar .tool-button { position:relative; display:flex; flex:none; align-items:center; justify-content:center; width:44px; min-width:44px; height:44px; min-height:44px; margin:0; padding:0; border:0; border-radius:10px; background:transparent; color:#1c1c1c; box-shadow:none; font-size:0; line-height:1; }
+.drawing-toolbar .tool-button:before { display:block; width:20px; height:20px; margin:0; background-size:20px; }
+.drawing-toolbar .tool-button:disabled { border:0; background:transparent; color:#999; box-shadow:none; }
+.drawing-toolbar .tool-button:disabled:before { opacity:.4; }
+.drawing-toolbar .tool-button[aria-pressed="true"]:not(:disabled) { background:#1c1c1c; color:#fff; }
+
+.drawing-toolbar #width:after { content:''; position:absolute; right:5px; bottom:5px; width:3px; height:3px; border-radius:50%; background:#1c1c1c; }
+.drawing-toolbar #width.pen-width-1:after { width:5px; height:5px; }
+.drawing-toolbar #width.pen-width-2:after { width:7px; height:7px; }
+.drawing-toolbar .tool-button:not(:disabled):active { background:#c5c5c5; box-shadow:none; }
+.drawing-toolbar .tool-button[aria-pressed="true"]:not(:disabled):active { background:#555; color:#fff; }
+.drawing-tool-divider { flex:none; width:1px; height:32px; margin:0 4px; background:#d2d2d2; }
+.drawing-notices { right:80px; }
+
+.drawing-toolbar .icon-pen::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
+.drawing-toolbar .icon-undo::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%206%204%2011l5%205M4%2011h9a6%206%200%200%201%206%206%22%2F%3E%3C%2Fsvg%3E"); }
+.drawing-toolbar .icon-clear::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M9%206V3h6v3M6%206l1%2015h10l1-15M10%2010v7m4-7v7%22%2F%3E%3C%2Fsvg%3E"); }
+
+.drawing-toolbar .tool-button .button-icon { display:block; width:20px; height:20px; margin:0; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.drawing-toolbar { max-width:calc(100% - 24px); overflow-x:auto; overflow-y:hidden; scrollbar-width:none; }
+.drawing-toolbar::-webkit-scrollbar { display:none; }
+.drawing-toolbar[data-layout="vertical"] { flex-direction:column; max-height:calc(100% - 24px); overflow-y:auto; overflow-x:hidden; }
+.drawing-toolbar[data-layout="vertical"] .drawing-tool-divider { width:32px; height:1px; margin:4px 0; }
+.drawing-toolbar .icon-pen::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
+.drawing-toolbar .icon-pen[aria-pressed="true"]::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
+
+/* Contextual options sit next to the active edge tool. */
+.draw-subtools { position:absolute; z-index:3; right:76px; top:12px; width:170px; max-width:calc(100% - 88px); padding:4px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:0 1px 0 #ccc; }
+.draw-subtools[hidden] { display:none; }
+.width-subtools { top:60px; }
+.draw-subtools button { display:flex; align-items:center; width:100%; min-height:44px; padding:8px 10px; border:0; border-radius:6px; background:transparent; color:#1c1c1c; font-size:16px; text-align:left; }
+.draw-subtools button[aria-pressed="true"] { background:#e2e2e2; font-weight:600; }
+.draw-subtools button:active { background:#c5c5c5; }
+.draw-subtools .pen-option-icon { flex:none; width:20px; height:20px; margin-right:10px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.drawing-toolbar .tool-button[aria-expanded="true"]:not([aria-pressed="true"]) { background:#c5c5c5; }
+
+.drawing-toolbar .toolbar-handle { cursor:grab; touch-action:none; -ms-touch-action:none; -webkit-user-select:none; user-select:none; color:#777; }
+.drawing-toolbar .toolbar-handle:active { cursor:grabbing; }
+
+/* Docked tools form a clean rail across the entire canvas edge. */
+.drawing-toolbar[data-dock="top"], .drawing-toolbar[data-dock="bottom"] { box-sizing:border-box; width:100%; max-width:100%; border-radius:0; }
+.drawing-toolbar[data-dock="left"], .drawing-toolbar[data-dock="right"] { box-sizing:border-box; height:100%; max-height:100%; border-radius:0; }
+
+/* A docked rail has a single separator on the drawing side. */
+.drawing-toolbar[data-dock="top"], .drawing-toolbar[data-dock="bottom"],
+.drawing-toolbar[data-dock="left"], .drawing-toolbar[data-dock="right"] { border:0; box-shadow:none; }
+.drawing-toolbar[data-dock="top"] { border-bottom:1px solid #777; }
+.drawing-toolbar[data-dock="bottom"] { border-top:1px solid #777; }
+.drawing-toolbar[data-dock="left"] { width:52px; padding-right:3px; border-right:1px solid #777; }
+.drawing-toolbar[data-dock="right"] { width:52px; padding-left:3px; border-left:1px solid #777; }
+.drawing-toolbar[data-dock="left"] .drawing-actions-start,
+.drawing-toolbar[data-dock="right"] .drawing-actions-start { margin-top:auto; }
+.drawing-toolbar[data-dock="top"] .drawing-actions-start,
+.drawing-toolbar[data-dock="bottom"] .drawing-actions-start { margin-left:auto; }
+
+/* The current drawing opens a compact, touch-friendly file library. */
+.drawing-page .tool-header { position:relative; z-index:5; }
+.drawing-file-wrap { flex:1 1 auto; min-width:0; position:relative; }
+.drawing-file-button { display:inline-flex; align-items:center; max-width:100%; min-height:44px; padding:0 10px; border:0; border-radius:8px; background:transparent; color:#1c1c1c; font-size:16px; cursor:pointer; }
+.drawing-file-button[aria-expanded="true"], .drawing-file-button:active { background:#c5c5c5; }
+.drawing-file-button #file-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.drawing-file-button .button-icon { flex:none; width:16px; height:16px; margin:0 0 0 6px; stroke-width:1.8; }
+.drawing-file-menu { position:absolute; top:100%; left:0; z-index:10; box-sizing:border-box; width:300px; max-width:calc(var(--little-view-width, 100vw) - 24px); padding:12px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:0 2px 0 #bbb; text-align:left; }
+.drawing-file-menu[hidden] { display:none; }
+.drawing-file-menu label, .drawing-file-menu-heading { display:block; margin:0 0 6px; color:#555; font-size:14px; font-weight:600; }
+.drawing-rename-row { display:flex; margin-bottom:16px; }
+.drawing-rename-row input { box-sizing:border-box; min-width:0; flex:1; height:44px; padding:0 10px; border:1px solid #888; border-radius:8px 0 0 8px; font-size:16px; }
+.drawing-rename-row button { min-height:44px; padding:0 12px; border:1px solid #888; border-left:0; border-radius:0 8px 8px 0; background:#e6e6e6; color:#1c1c1c; font-size:16px; }
+.drawing-file-list { max-height:40vh; overflow-y:auto; scrollbar-width:none; }
+.drawing-file-list::-webkit-scrollbar { display:none; }
+.drawing-file-row, .drawing-new-file { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:44px; padding:8px 10px; border:0; border-radius:6px; background:transparent; color:#1c1c1c; font-size:16px; text-align:left; }
+.drawing-file-row span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.drawing-file-row[aria-current="true"] { background:#e5e5e5; font-weight:600; }
+.drawing-file-row:active, .drawing-new-file:active, .drawing-rename-row button:active { background:#c5c5c5; }
+.drawing-new-file { justify-content:flex-start; border-top:1px solid #ccc; border-radius:0; margin-top:4px; }
+.drawing-new-file span { font-size:22px; margin-right:8px; }
+
+/* The icon follows the chosen pen and the current tool's size. */
+.drawing-toolbar #pen .pen-style-icon { display:none; }
+.drawing-toolbar #pen[data-style="pencil"] .pencil-icon,
+.drawing-toolbar #pen[data-style="sharp"] .sharp-icon,
+.drawing-toolbar #pen[data-style="brush"] .brush-icon { display:block; }
+.drawing-toolbar #width:after { display:none; }
+.drawing-toolbar #width .size-icon { display:none; }
+.drawing-toolbar #width[data-tool="pen"] .ink-size-icon,
+.drawing-toolbar #width[data-tool="eraser"] .eraser-size-icon { display:block; }
+.drawing-toolbar #width.pen-width-0 .ink-size-icon { stroke-width:1.5; }
+.drawing-toolbar #width.pen-width-1 .ink-size-icon { stroke-width:3; }
+.drawing-toolbar #width.pen-width-2 .ink-size-icon { stroke-width:5; }
+.drawing-toolbar #width.pen-width-0 .eraser-size-icon { width:13px; height:13px; }
+.drawing-toolbar #width.pen-width-1 .eraser-size-icon { width:17px; height:17px; }
+.drawing-toolbar #width.pen-width-2 .eraser-size-icon { width:21px; height:21px; }
+.drawing-file-entry { display:flex; align-items:center; }
+.drawing-file-entry .drawing-file-row { flex:1; min-width:0; }
+.drawing-file-delete { flex:none; display:flex; align-items:center; justify-content:center; width:44px; height:44px; padding:0; border:0; border-radius:6px; background:transparent; color:#555; }
+.drawing-file-delete svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.drawing-file-delete:active { background:#c5c5c5; }
+.drawing-delete-confirm { display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding:8px; background:#f0f0f0; border-radius:6px; font-size:15px; }
+.drawing-delete-confirm span { flex-basis:100%; overflow-wrap:anywhere; }
+.drawing-delete-confirm button { min-height:40px; padding:6px 10px; border:1px solid #aaa; border-radius:6px; background:#fff; font-size:15px; }
+.drawing-delete-confirm button:last-child { background:#1c1c1c; border-color:#1c1c1c; color:#fff; }
+.share-overlay { position:absolute; z-index:8; top:0; right:0; bottom:0; left:0; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(255,255,255,.9); }
+.share-overlay[hidden] { display:none; }
+.share-card { box-sizing:border-box; width:100%; max-width:420px; padding:20px; border:1px solid #777; border-radius:12px; background:#fff; box-shadow:0 2px 0 #ccc; }
+.share-card h2 { margin:0 0 12px; font-size:22px; }
+.share-card p { margin:0 0 12px; font-size:16px; }
+.share-card a { display:block; margin:0 0 16px; word-wrap:break-word; overflow-wrap:anywhere; color:#1c1c1c; font-size:16px; }
+.share-card a[hidden] { display:none; }
+.share-card button { min-height:44px; padding:0 18px; border:0; border-radius:8px; background:#1c1c1c; color:#fff; font-size:16px; font-weight:600; }
+
+.share-card #share-qr { display:block; max-width:100%; height:auto; margin:0 auto 16px; image-rendering:pixelated; }
+.share-card #share-qr[hidden] { display:none; }

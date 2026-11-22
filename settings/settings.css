@@ -1,0 +1,32 @@
+.settings-page { display:flex; flex-direction:column; min-height:var(--little-view-height, 100vh); }
+.settings-page .tool-controls { display:flex; justify-content:flex-end; }
+.settings-page .tool-header.tool-header { box-shadow:none; }
+.settings-page .tool-header .app-exit-group .app-close { border-left:0; }
+.settings-workspace { display:flex; flex:1; min-height:0; background:#f3f3f3; background:var(--st-toolbar); }
+.settings-navigation { flex:none; width:240px; }
+.settings-group { margin:0; padding:8px 12px; color:#555; font-size:12px; line-height:20px; font-weight:700; text-transform:uppercase; }
+.settings-tab { display:block; min-height:48px; padding:11px 16px; border:1px solid transparent; border-right:0; background:transparent; color:#1c1c1c; font-size:16px; line-height:24px; text-decoration:none; }
+.settings-tab[aria-current="page"] { border-color:#777; background:#fff; font-weight:600; }
+.settings-main { display:flex; flex:1; flex-direction:column; min-width:0; margin:12px 12px 12px 0; border:1px solid #777; border-radius:6px; background:#fff; overflow:auto; }
+.settings-main[hidden] { display:none; }
+.settings-title { min-height:52px; margin:0; padding:12px 16px; font-size:20px; line-height:28px; font-weight:600; }
+.settings-panel { padding:16px; }
+.settings-option { display:flex; align-items:center; min-height:44px; padding-left:8px; font-size:17px; cursor:pointer; }
+.settings-option input { width:20px; height:20px; margin:0 12px 0 0; accent-color:#1c1c1c; }
+.orientation-options { margin:0; padding:0; border:0; }
+.orientation-options legend { padding:0 0 8px; font-size:16px; font-weight:600; }
+.settings-warning { margin:8px 0 0; color:#555; font-size:16px; }
+@media (max-width:640px) {
+  .settings-navigation { width:160px; }
+  .settings-tab { padding-left:12px; padding-right:8px; }
+  .settings-panel { padding:12px; }
+}
+@media (max-width:360px) {
+  .settings-navigation { width:120px; }
+  .settings-main { margin-top:8px; margin-right:8px; margin-bottom:8px; }
+  .settings-title { padding-left:10px; padding-right:10px; }
+}
+body.little-wide-landscape .settings-navigation { width:240px; }
+
+.display-options { margin:24px 0 0; padding:0; border:0; }
+.display-options legend { padding:0 0 8px; font-size:16px; font-weight:600; }
