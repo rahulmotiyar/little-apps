@@ -1,27 +1,35 @@
 (function (root) {
   'use strict';
-  // Pack in reading order. A widget occupies two columns and two rows.
   function paginate(items, columns, rows) {
-    var pages = [], page = [], used = [], cursor = 0;
-    function place(item, index) {
-      var w = Math.min(columns, item.columns || 1), h = Math.min(rows, item.rows || 1);
-      for (var slot = cursor; slot < columns * rows; slot++) {
-        var y = Math.floor(slot / columns), x = slot % columns, free = x + w <= columns && y + h <= rows;
-        for (var dy = 0; free && dy < h; dy++) for (var dx = 0; dx < w; dx++) if (used[(y + dy) * columns + x + dx]) free = false;
-        if (!free) continue;
-        for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) used[(y + dy) * columns + x + dx] = true;
-        page.push({ index:index, column:x + 1, row:y + 1, columns:w, rows:h });
-        cursor = slot + w;
-        return true;
-      }
-      return false;
-    }
-    items.forEach(function (item, index) {
-      if (!place(item, index)) {
-        pages.push(page); page = []; used = []; cursor = 0; place(item, index);
-      }
+    if (columns < 1 || rows < 1) return [];
+    var pages = [];
+    var pending = items.map(function (item, index) {
+      return { index:index, columns:Math.min(columns, item.columns || 1), rows:Math.min(rows, item.rows || 1) };
     });
-    if (page.length) pages.push(page);
+
+    while (pending.length) {
+      var page = [], used = [];
+      // Apps can fill slots beside widgets or ahead of a widget that needs the next page.
+      pending = pending.filter(function (item) {
+        for (var slot = 0; slot < columns * rows; slot++) {
+          var y = Math.floor(slot / columns), x = slot % columns;
+          var free = x + item.columns <= columns && y + item.rows <= rows;
+          for (var dy = 0; free && dy < item.rows; dy++) {
+            for (var dx = 0; dx < item.columns; dx++) {
+              if (used[(y + dy) * columns + x + dx]) free = false;
+            }
+          }
+          if (!free) continue;
+          for (dy = 0; dy < item.rows; dy++) {
+            for (dx = 0; dx < item.columns; dx++) used[(y + dy) * columns + x + dx] = true;
+          }
+          page.push({ index:item.index, column:x + 1, row:y + 1, columns:item.columns, rows:item.rows });
+          return false;
+        }
+        return true;
+      });
+      pages.push(page);
+    }
     return pages;
   }
   if (typeof module === 'object' && module.exports) module.exports = paginate;
