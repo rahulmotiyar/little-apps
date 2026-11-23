@@ -9,7 +9,7 @@
   <title>Little apps</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="launcher.css?v=20261121-refined-gear">
+  <link rel="stylesheet" href="launcher.css?v=square-dial">
   <link rel="stylesheet" href="controls.css">
   <link rel="stylesheet" href="still-apps.css?v=20261121-manual-rotation-v2">
   <link rel="stylesheet" href="fullscreen.css?v=1">
@@ -25,7 +25,22 @@
     <main class="launcher-main">
       <nav class="app-grid" id="launcher-grid" aria-label="Apps">
         <section class="launcher-widget clock-widget" aria-label="Clock">
-          <div class="widget-surface clock-content"><time id="widget-time">--:--</time><span id="widget-date"></span></div>
+          <div class="widget-surface clock-content">
+            <time id="widget-time" class="sr-only"></time>
+            <svg class="clock-face" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+              <path id="clock-minute-ticks" fill="none" stroke="currentColor" stroke-width="1.35"/>
+              <path id="clock-hour-ticks" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <g id="clock-numerals" text-anchor="middle"></g>
+              <text x="100" y="55" text-anchor="middle" font-size="14" font-weight="700">motyar</text>
+              <text x="100" y="67" text-anchor="middle" font-size="12" font-weight="400">studios</text>
+              <rect class="clock-date-window" x="130" y="91" width="26" height="19" stroke="currentColor" stroke-width="1.2"/>
+              <text id="clock-date" x="143" y="106" text-anchor="middle"></text>
+              <path id="clock-hour-hand" d="M97.5 105V55L100 52l2.5 3v50Z"/>
+              <path id="clock-minute-hand" d="M98.5 107V33L100 30l1.5 3v74Z"/>
+              <circle cx="100" cy="100" r="3"/>
+              <circle class="clock-pin" cx="100" cy="100" r="1"/>
+            </svg>
+          </div>
           <span class="app-name">Clock</span>
         </section>
         <section class="launcher-widget calendar-widget" aria-label="Calendar">
@@ -88,6 +103,6 @@
   <script src="launcher-layout.js?v=dense-packing"></script>
   <script src="launcher-gestures.js?v=20261121-swipe"></script>
   <script src="launcher-settings.js?v=web-fullscreen"></script>
-  <script src="launcher-widgets.js?v=20261121-refined-gear"></script>
+  <script src="launcher-widgets.js?v=square-dial"></script>
 </body>
 </html>
