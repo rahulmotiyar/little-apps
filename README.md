@@ -13,6 +13,10 @@ address, and bookmark it. Keep JavaScript enabled. Use the browser's normal exit
 controls to return to Kindle Home. Browser bars stay under the Kindle's control.
 Older models/firmware may differ; this edition needs testing on your device.
 
+The fullscreen button appears in the upper right when the browser reports
+fullscreen support. Opening another app may leave fullscreen. Use that app's
+fullscreen button to enter it again.
+
 ## Your work
 
 Drawings, notes and settings save in browser storage on that device and website

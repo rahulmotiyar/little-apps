@@ -1,0 +1,68 @@
+.web-fullscreen-button {
+  position: absolute;
+  top: 0;
+  right: 52px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--st-ink, #1c1c1c);
+  cursor: pointer;
+}
+
+.web-fullscreen-button[hidden],
+.web-fullscreen-button .fullscreen-exit,
+.web-fullscreen-button.is-fullscreen .fullscreen-enter {
+  display: none;
+}
+
+.web-fullscreen-button.is-fullscreen .fullscreen-exit { display: block; }
+.web-fullscreen-button:active { background: var(--st-pressed, #c5c5c5); }
+.web-fullscreen-button:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+
+.web-fullscreen-ready .tool-page > .tool-header,
+.web-fullscreen-ready .game-page > .game-header { padding-right: 104px; }
+
+.web-fullscreen-ready .home-page { position: relative; }
+.home-page .web-fullscreen-button { right: 0; }
+.web-fullscreen-ready .home-page .launcher-surface { padding-top: 52px; }
+
+.web-fullscreen-message {
+  position: absolute;
+  z-index: 5;
+  top: 52px;
+  right: 8px;
+  max-width: calc(100% - 16px);
+  padding: 8px 12px;
+  border: 1px solid var(--st-line, #777);
+  border-radius: var(--st-radius, 10px);
+  background: var(--st-paper, #fff);
+  color: var(--st-ink, #1c1c1c);
+  font-size: 14px;
+}
+
+.web-fullscreen-message:empty { padding: 0; border: 0; }
+
+@media (max-width: 420px) {
+  .web-fullscreen-ready .tool-page > .tool-header,
+  .web-fullscreen-ready .game-page > .game-header { padding-right: 88px; }
+  .tool-header .web-fullscreen-button,
+  .game-header .web-fullscreen-button { right: 44px; width: 44px; }
+  .web-fullscreen-ready .tool-header .tool-controls .app-exit-group,
+  .web-fullscreen-ready .game-header .game-actions .app-exit-group,
+  .web-fullscreen-ready .app-exit-group .app-close { width: 44px; min-width: 44px; }
+  .web-fullscreen-ready .tool-header .tool-actions > .tool-button,
+  .web-fullscreen-ready .tool-header .sudoku-help,
+  .web-fullscreen-ready .game-header .game-actions > .tool-button {
+    flex-basis: 44px;
+    width: 44px !important;
+    min-width: 44px !important;
+  }
+  .web-fullscreen-ready .tool-header .tool-title { margin-right: 4px; }
+  .web-fullscreen-ready .tool-header .quiet-select-trigger { padding: 0 4px; }
+  .web-fullscreen-ready .quiet-select-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+}

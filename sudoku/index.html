@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css?v=20261121-manual-rotation-v2">
   <link rel="stylesheet" href="../controls.css">
   <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
+  <link rel="stylesheet" href="../fullscreen.css?v=1">
 </head>
 <body>
   <div class="tool-page sudoku-page" id="sudoku-page">
@@ -30,6 +31,11 @@
         <button class="tool-button sudoku-help" id="help" type="button" aria-label="How to play Sudoku" aria-haspopup="dialog"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1-1.5 2.5M12 17h.01"/></svg></button>
         <span class="sudoku-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Sudoku"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
       </div>
+<button type="button" id="web-fullscreen" class="web-fullscreen-button" aria-label="Enter fullscreen" title="Enter fullscreen" hidden>
+  <svg class="fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg>
+  <svg class="fullscreen-exit" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9h5V4m11 5h-5V4M9 20v-5H4m11 5v-5h5"/></svg>
+</button>
+<div id="web-fullscreen-message" class="web-fullscreen-message" role="status"></div>
     </header>
     <main>
       <noscript><p>Turn on JavaScript in your browser to play Sudoku.</p></noscript>
@@ -70,6 +76,7 @@
       <p>Made a mistake? Select your number and tap the eraser, or use Undo to reverse your last move.</p>
     </section>
   </div>
+  <script src="../fullscreen.js?v=1"></script>
   <script src="../orientation.js?v=20261121-display-preferences"></script>
   <script src="help.js"></script>
   <script src="engine.js"></script>

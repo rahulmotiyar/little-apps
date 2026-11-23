@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../still-apps.css?v=20261121-manual-rotation-v2">
   <link rel="stylesheet" href="../drawing/toolbar.css?v=20261121-notebook-rail">
   <link rel="stylesheet" href="workspace.css?v=20261121-notebook-workspace">
+  <link rel="stylesheet" href="../fullscreen.css?v=1">
 </head>
 <body>
   <div class="tool-page notebook-page is-empty" id="notebook-page">
@@ -27,6 +28,11 @@
         </div>
         <span class="notebook-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Notebook"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
       </div>
+<button type="button" id="web-fullscreen" class="web-fullscreen-button" aria-label="Enter fullscreen" title="Enter fullscreen" hidden>
+  <svg class="fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg>
+  <svg class="fullscreen-exit" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9h5V4m11 5h-5V4M9 20v-5H4m11 5v-5h5"/></svg>
+</button>
+<div id="web-fullscreen-message" class="web-fullscreen-message" role="status"></div>
     </header>
     <p class="tool-status storage-status" id="storage-status" role="status" aria-live="polite" style="display:none"></p>
     <main class="notebook-layout">
@@ -89,6 +95,7 @@
     </main>
     <noscript><p>Enable JavaScript in your browser to write notes.</p></noscript>
   </div>
+  <script src="../fullscreen.js?v=1"></script>
   <script src="../orientation.js?v=20261121-display-preferences"></script>
   <script src="state.js"></script>
   <script src="ink.js?v=20261121-manual-rotation-v2"></script>

@@ -47,7 +47,8 @@
     var maxGridWidth = shortLandscape ? columns * 136 - 12 : columns * 140 - 16;
     var gridWidth = Math.min(width - edgePadding * 2, maxGridWidth);
     var tileWidth = shortSide <= 360 ? 52 : shortSide <= 540 ? 56 : 80;
-    var available = size.height - 48;
+    var topPadding = page.classList.contains('web-fullscreen-ready') ? 52 : 24;
+    var available = size.height - topPadding - 24;
     var rowSize = Math.min(shortSide <= 540 ? 96 : 128, Math.max(tileWidth + 38, Math.floor((available - 44 - 24) / 2)));
     page.style.setProperty('--launcher-cell-inset', Math.max(0, ((gridWidth - gap * (columns - 1)) / columns - tileWidth) / 2) + 'px');
     page.style.setProperty('--launcher-tile-size', tileWidth + 'px');
