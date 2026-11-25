@@ -126,21 +126,46 @@
 .question-anchor .counting-help { position:absolute; top:auto; bottom:0; left:0; height:148px; max-height:148px; margin:0; overflow-y:auto; }
 
 /* The logical viewport also covers screens rotated in Display settings. */
-.equation { font-size:clamp(28px, calc(var(--little-view-width, 100vw) * .12), 80px); }
+.sums-page {
+  --sums-side-inset:24px;
+  --equation-scale:.19;
+  --equation-height-limit:calc((var(--little-view-height, 100vh) - 220px) * .31);
+}
+/* Leave room for the widest answered sum at each level. */
+.sums-page[data-group="4"] { --equation-scale:.163; }
+.sums-page[data-group="5"] { --equation-scale:.135; }
+.question-area {
+  --equation-width:calc(var(--little-view-width, 100vw) - 2 * var(--sums-side-inset));
+}
+.equation {
+  font-size:clamp(16px, min(calc(var(--equation-width) * var(--equation-scale)), var(--equation-height-limit)), 132px);
+}
+@media (max-width:480px) {
+  .sums-page[data-group="5"] .equation { letter-spacing:-1px; }
+}
+@supports not (font-size:clamp(16px, min(48px, 72px), 132px)) {
+  .sums-page[data-group="5"] .equation { font-size:64px; }
+  @media (max-width:480px) { .sums-page[data-group="5"] .equation { font-size:40px; } }
+  @media (max-width:380px) { .sums-page[data-group="5"] .equation { font-size:36px; } }
+}
 body.little-landscape .math-layout { flex-direction:row; align-items:center; }
-body.little-landscape .question-area { width:55%; flex:none; padding:12px 12px 12px 0; }
+body.little-landscape .question-area {
+  width:55%; flex:none; padding:12px 12px 12px 0;
+  --equation-width:calc((var(--little-view-width, 100vw) - 2 * var(--sums-side-inset)) * .55 - 12px);
+  --equation-height-limit:calc(var(--little-view-height, 100vh) * .22);
+}
 body.little-landscape .answers-area { width:45%; }
-body.little-landscape .equation { font-size:clamp(26px, calc(var(--little-view-width, 100vw) * .068), 76px); }
 
 /* Keep the outer answer-grid insets equal at each responsive size. */
-.sums-page .sums-main { padding-left:24px; padding-right:24px; padding-bottom:24px; }
+.sums-page .sums-main { padding-left:var(--sums-side-inset); padding-right:var(--sums-side-inset); padding-bottom:var(--sums-side-inset); }
 @media (max-width:640px) {
- .sums-page .sums-main { padding-left:16px; padding-right:16px; padding-bottom:16px; }
+ .sums-page { --sums-side-inset:16px; }
 }
 @media (max-width:380px) {
- .sums-page .sums-main { padding-left:12px; padding-right:12px; padding-bottom:12px; }
+ .sums-page { --sums-side-inset:12px; }
 }
 
+body.little-compact .sums-page { --sums-side-inset:12px; }
 body.little-compact .sums-page .sums-main { padding:10px 12px 12px; }
 body.little-compact .round-progress { display:flex; align-items:center; justify-content:center; }
 body.little-compact .progress-star { width:24px; height:24px; margin:0 4px; vertical-align:middle; }

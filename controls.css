@@ -36,15 +36,8 @@
 .feedback:empty { display: none; }
 .place-value-hint { margin: 0 auto; }
 .place-value-hint .hint-step { margin: 4px 0; font-size: 22px; line-height: 1.4; }
-.sums-page[data-group="5"] .equation { font-size: 64px; }
 @media (max-width: 640px) {
   .tool-header .tool-title { padding-right: 64px; }
-}
-@media (max-width: 480px) {
-  .sums-page[data-group="5"] .equation { font-size: 40px; letter-spacing: -1px; }
-}
-@media (max-width: 380px) {
-  .sums-page[data-group="5"] .equation { font-size: 36px; }
 }
 
 /* The Maths toolbar treatment is shared by every application. */
