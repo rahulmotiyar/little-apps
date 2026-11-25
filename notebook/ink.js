@@ -1,9 +1,10 @@
 (function (root, factory) {
   'use strict';
-  var api = factory(root);
+  var pens = typeof module === 'object' && module.exports ? require('../pen-tools.js') : root.LittleAppsPens;
+  var api = factory(root, pens);
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
   if (root) { root.NotebookInk = api; }
-}(typeof window !== 'undefined' ? window : null, function (root) {
+}(typeof window !== 'undefined' ? window : null, function (root, pens) {
   'use strict';
 
   var MAX_STROKES = 200;
@@ -16,7 +17,9 @@
     for (var i = 0; i < list.length; i += 1) {
       var points = [];
       for (var j = 0; j < list[i].points.length; j += 1) { points.push(list[i].points[j].slice(0)); }
-      result.push({ width: list[i].width, points: points });
+      var stroke = { width: list[i].width, points: points };
+      if (list[i].style) { stroke.style = list[i].style; }
+      result.push(stroke);
     }
     return result;
   }
@@ -26,7 +29,7 @@
     var count = 0;
     for (var i = 0; i < list.length; i += 1) {
       var stroke = list[i];
-      if (!stroke || [3, 6, 12].indexOf(stroke.width) === -1 || Object.prototype.toString.call(stroke.points) !== '[object Array]' || !stroke.points.length || stroke.points.length > MAX_STROKE_POINTS) { return false; }
+      if (!stroke || pens.widths.indexOf(stroke.width) === -1 || (stroke.style !== undefined && pens.styles.indexOf(stroke.style) === -1) || Object.prototype.toString.call(stroke.points) !== '[object Array]' || !stroke.points.length || stroke.points.length > MAX_STROKE_POINTS) { return false; }
       count += stroke.points.length;
       if (count > MAX_POINTS) { return false; }
       for (var j = 0; j < stroke.points.length; j += 1) {
@@ -80,6 +83,7 @@
     var canvas = options.canvas;
     var paper = options.paper || canvas;
     var host = canvas && canvas.ownerDocument && canvas.ownerDocument.defaultView || root;
+    var renderer = pens.createRenderer(canvas && canvas.ownerDocument);
     var onChange = typeof options.onChange === 'function' ? options.onChange : function () {};
     var onNotice = typeof options.onNotice === 'function' ? options.onNotice : function () {};
     var context = null;
@@ -87,6 +91,9 @@
     var history = [];
     var gesture = null;
     var tool = 'draw';
+    var penStyle = 'sharp';
+    var penWidth = pens.widths[1];
+    var eraserRadius = pens.eraserRadii[1];
     var source = null;
     var sourceId = null;
     var lastTouch = 0;
@@ -113,7 +120,7 @@
       var right = 1000;
       var bottom = 1000;
       for (var i = 0; i < strokes.length; i += 1) {
-        var margin = strokes[i].width / 2 + 2;
+        var margin = pens.strokeWidth(strokes[i]) / 2 + 2;
         for (var j = 0; j < strokes[i].points.length; j += 1) {
           var point = strokes[i].points[j];
           left = Math.min(left, point[0] - margin);
@@ -127,25 +134,25 @@
       offsetY = (height - (bottom - top) * viewScale) / 2 - top * viewScale;
     }
 
-    function dot(point, penWidth) {
-      context.beginPath();
-      context.arc(point[0], point[1], penWidth / 2, 0, Math.PI * 2, false);
-      context.fill();
-    }
-
-    function curve(start, control, end, penWidth) {
-      context.lineWidth = penWidth;
-      context.beginPath();
-      context.moveTo(start[0], start[1]);
-      context.quadraticCurveTo(control[0], control[1], end[0], end[1]);
-      context.stroke();
-    }
-
     function drawStroke(stroke, completed) {
       var points = stroke.points;
-      dot(points[0], stroke.width);
+      var strokeWidth = pens.strokeWidth(stroke);
+      renderer.configure(context, stroke);
+      renderer.dot(context, points[0], strokeWidth, stroke);
       if (points.length < 2) { return; }
-      context.lineWidth = stroke.width;
+      if (stroke.style === 'brush' || stroke.style === 'pencil') {
+        for (var part = 1; part < points.length; part += 1) {
+          var previous = points[part - 1];
+          var start = part === 1 ? previous : midpoint(points[part - 2], previous);
+          renderer.curve(context, start, previous, midpoint(previous, points[part]), strokeWidth, stroke);
+        }
+        if (completed) {
+          var finalPoint = points[points.length - 1];
+          renderer.curve(context, midpoint(points[points.length - 2], finalPoint), finalPoint, finalPoint, strokeWidth, stroke);
+        }
+        return;
+      }
+      context.lineWidth = strokeWidth;
       context.beginPath();
       context.moveTo(points[0][0], points[0][1]);
       for (var i = 1; i < points.length; i += 1) {
@@ -208,7 +215,7 @@
       var removed = false;
       for (var i = strokes.length - 1; i >= 0; i -= 1) {
         var stroke = strokes[i];
-        var radius = 12 / viewScale + stroke.width / 2;
+        var radius = eraserRadius / viewScale + pens.strokeWidth(stroke) / 2;
         var hit = stroke.points.length === 1 && distanceSquared(stroke.points[0], first, second) <= radius * radius;
         var start = stroke.points[0];
         var tolerance = 1 / viewScale;
@@ -237,11 +244,13 @@
       sourceId = id;
       if (tool === 'erase') { eraseBetween(point, point); }
       else {
-        gesture.stroke = { width: 6, points: [point] };
+        gesture.stroke = { width: penWidth, points: [point] };
+        if (penStyle !== 'sharp') { gesture.stroke.style = penStyle; }
         strokes.push(gesture.stroke);
         pointCount += 1;
         gesture.changed = true;
-        dot(point, 6);
+        renderer.configure(context, gesture.stroke);
+        renderer.dot(context, point, pens.strokeWidth(gesture.stroke), gesture.stroke);
       }
     }
 
@@ -263,7 +272,7 @@
       var points = gesture.stroke.points;
       var count = points.length;
       var start = count === 2 ? points[0] : midpoint(points[count - 3], previous);
-      curve(start, previous, midpoint(previous, point), gesture.stroke.width);
+      renderer.curve(context, start, previous, midpoint(previous, point), pens.strokeWidth(gesture.stroke), gesture.stroke);
     }
 
     function movePointer(event, finalSample) {
@@ -282,7 +291,7 @@
       if (ended.tool === 'draw' && ended.stroke.points.length > 1) {
         var points = ended.stroke.points;
         var last = points[points.length - 1];
-        curve(midpoint(points[points.length - 2], last), last, last, ended.stroke.width);
+        renderer.curve(context, midpoint(points[points.length - 2], last), last, last, pens.strokeWidth(ended.stroke), ended.stroke);
       }
       gesture = null;
       source = null;
@@ -313,6 +322,13 @@
       if (canvas && canvas.style) { canvas.style.cursor = value === 'erase' ? 'cell' : 'crosshair'; }
       return true;
     }
+
+    function setPen(style, widthIndex) {
+      penStyle = style;
+      penWidth = pens.widths[widthIndex];
+    }
+
+    function setEraserSize(sizeIndex) { eraserRadius = pens.eraserRadii[sizeIndex]; }
 
     function undo() {
       finish();
@@ -381,7 +397,7 @@
       host.addEventListener('littleappsorientationchange', resize, false);
     }
 
-    return { load: load, setTool: setTool, resize: resize, finish: finish, undo: undo, canUndo: function () { return Boolean(history.length || gesture && gesture.changed); }, getStrokes: function () { return copy(strokes); } };
+    return { load: load, setTool: setTool, setPen: setPen, setEraserSize: setEraserSize, resize: resize, finish: finish, undo: undo, canUndo: function () { return Boolean(history.length || gesture && gesture.changed); }, getStrokes: function () { return copy(strokes); } };
   }
 
   return { create: create };

@@ -1,19 +1,21 @@
 (function () {
   'use strict';
 
+  var pens = window.LittleAppsPens;
+  var renderer = pens.createRenderer(document);
   var storageKey = 'little-apps.drawing.v2';
   var legacyStorageKey = 'little-apps.drawing.v1';
   var maxStrokes = 200;
   var maxPoints = 20000;
   var maxStrokePoints = 1000;
-  var penNames = ['Fine', 'Medium', 'Thick'];
-  var penWidths = [3, 6, 12];
+  var penNames = pens.widthNames;
+  var penWidths = pens.widths;
   var pen = 1;
   var penStyle = 'sharp';
   var eraserSize = 1;
-  var penStyleNames = { pencil: 'Pencil', sharp: 'Sharp pen', brush: 'Brush' };
-  var eraserNames = ['Small', 'Medium', 'Large'];
-  var eraserRadii = [8, 14, 24];
+  var penStyleNames = pens.names;
+  var eraserNames = pens.eraserNames;
+  var eraserRadii = pens.eraserRadii;
   var tool = 'pen';
   var gesture = null;
   var gestureChanged = false;
@@ -138,7 +140,7 @@
     widthButton.className = 'tool-button pen-width-' + sizeIndex;
     widthButton.setAttribute('data-tool', isEraser ? 'eraser' : 'pen');
     for (var i = 0; i < styleButtons.length; i += 1) {
-      styleButtons[i].setAttribute('aria-pressed', String(['pencil', 'sharp', 'brush'][i] === penStyle));
+      styleButtons[i].setAttribute('aria-pressed', String(pens.styles[i] === penStyle));
       widthButtons[i].setAttribute('aria-pressed', String(i === sizeIndex));
       widthButtons[i].textContent = sizeNames[i];
     }
@@ -159,92 +161,29 @@
     strokes = state.strokes; beforeClear = state.beforeClear; pointCount = countPoints(strokes);
   }
 
-  function inkWidth(stroke) { return stroke.width * (stroke.style === 'pencil' ? 0.8 : stroke.style === 'brush' ? 1.5 : 1); }
-  var graphiteTile = null, graphiteContext = null, graphitePattern = null;
-  function pencilInk() {
-    if (!context.createPattern) { return '#666'; }
-    try {
-      if (!graphiteTile) {
-        var tile = document.createElement('canvas'); tile.width = 16; tile.height = 16;
-        var texture = tile.getContext('2d');
-        if (!texture) { return '#666'; }
-        texture.fillStyle = '#b0b0b0'; texture.fillRect(0, 0, 16, 16);
-        var seed = 7919;
-        for (var i = 0; i < 64; i += 1) {
-          seed = (seed * 1664525 + 1013904223) >>> 0; var x = (seed >>> 16) % 16;
-          seed = (seed * 1664525 + 1013904223) >>> 0; var y = (seed >>> 16) % 16;
-          texture.fillStyle = i % 3 === 0 ? '#666' : '#888';
-          texture.fillRect(x, y, 1, 1);
-        }
-        graphiteTile = tile;
-      }
-      if (graphiteContext !== context) { graphitePattern = context.createPattern(graphiteTile, 'repeat'); graphiteContext = context; }
-      return graphitePattern || '#666';
-    } catch (error) { return '#666'; }
-  }
-  function configureInk(stroke) {
-    var color = stroke.style === 'pencil' ? pencilInk() : '#000';
-    context.globalCompositeOperation = stroke.style === 'pencil' || stroke.style === 'brush' ? 'darken' : 'source-over';
-    context.fillStyle = color; context.strokeStyle = color;
-  }
-  function brushGradient(first, last, width, radial) {
-    var gradient;
-    try {
-      if (radial && context.createRadialGradient) {
-        gradient = context.createRadialGradient(first[0], first[1], 0, first[0], first[1], width / 2);
-        gradient.addColorStop(0, '#222'); gradient.addColorStop(0.55, '#555'); gradient.addColorStop(1, '#aaa');
-      } else if (!radial && context.createLinearGradient) {
-        var dx = last[0] - first[0], dy = last[1] - first[1], length = Math.sqrt(dx * dx + dy * dy) || 1;
-        var x = (first[0] + last[0]) / 2, y = (first[1] + last[1]) / 2;
-        var nx = -dy / length * width / 2, ny = dx / length * width / 2;
-        if (!nx && !ny) { nx = width / 2; }
-        gradient = context.createLinearGradient(x - nx, y - ny, x + nx, y + ny);
-        gradient.addColorStop(0, '#aaa'); gradient.addColorStop(0.25, '#666');
-        gradient.addColorStop(0.5, '#222'); gradient.addColorStop(0.75, '#666'); gradient.addColorStop(1, '#aaa');
-      }
-    } catch (error) { return '#333'; }
-    return gradient || '#333';
-  }
-
-  function drawDot(point, width, stroke) {
-    if (stroke && stroke.style === 'brush') { context.fillStyle = brushGradient(point, point, width, true); }
-    context.beginPath();
-    context.arc(point[0], point[1], width / 2, 0, Math.PI * 2, false);
-    context.fill();
-  }
-
   function midpoint(first, second) {
     return [(first[0] + second[0]) / 2, (first[1] + second[1]) / 2];
   }
 
-  function drawCurve(first, control, last, width, stroke) {
-    if (stroke && stroke.style === 'brush') { context.strokeStyle = brushGradient(first, last, width, false); }
-    context.lineWidth = width;
-    context.beginPath();
-    context.moveTo(first[0], first[1]);
-    context.quadraticCurveTo(control[0], control[1], last[0], last[1]);
-    context.stroke();
-  }
-
   function drawStroke(stroke) {
     var points = stroke.points;
-    configureInk(stroke);
+    renderer.configure(context, stroke);
     if (stroke.style === 'pencil' || stroke.style === 'brush') {
-      var width = inkWidth(stroke);
-      drawDot(points[0], width, stroke);
+      var width = pens.strokeWidth(stroke);
+      renderer.dot(context, points[0], width, stroke);
       for (var part = 1; part < points.length; part += 1) {
         var previous = points[part - 1];
         var start = part === 1 ? previous : midpoint(points[part - 2], previous);
-        drawCurve(start, previous, midpoint(previous, points[part]), width, stroke);
+        renderer.curve(context, start, previous, midpoint(previous, points[part]), width, stroke);
       }
       if (points.length > 1) {
         var finalPoint = points[points.length - 1];
-        drawCurve(midpoint(points[points.length - 2], finalPoint), finalPoint, finalPoint, width, stroke);
+        renderer.curve(context, midpoint(points[points.length - 2], finalPoint), finalPoint, finalPoint, width, stroke);
       }
       return;
     }
-    if (points.length === 1) { drawDot(points[0], inkWidth(stroke), stroke); return; }
-    context.lineWidth = inkWidth(stroke);
+    if (points.length === 1) { renderer.dot(context, points[0], pens.strokeWidth(stroke), stroke); return; }
+    context.lineWidth = pens.strokeWidth(stroke);
     context.beginPath();
     context.moveTo(points[0][0], points[0][1]);
     for (var i = 1; i < points.length; i += 1) {
@@ -275,7 +214,7 @@
     finish();
     var left = 0, top = 0, right = 1000, bottom = 1000, i, j;
     for (i = 0; i < strokes.length; i += 1) {
-      var stroke = strokes[i], margin = inkWidth(stroke) / 2 + 2;
+      var stroke = strokes[i], margin = pens.strokeWidth(stroke) / 2 + 2;
       for (j = 0; j < stroke.points.length; j += 1) {
         var point = stroke.points[j];
         left = Math.min(left, point[0] - margin); top = Math.min(top, point[1] - margin);
@@ -306,7 +245,7 @@
       var points = current.points;
       if (points.length > 1) {
         var last = points[points.length - 1];
-        drawCurve(midpoint(points[points.length - 2], last), last, last, inkWidth(current), current);
+        renderer.curve(context, midpoint(points[points.length - 2], last), last, last, pens.strokeWidth(current), current);
       }
     }
     var changed = !!current || gestureChanged;
@@ -323,7 +262,7 @@
     var bottom = 1000;
     for (var i = 0; i < strokes.length; i += 1) {
       var stroke = strokes[i];
-      var margin = inkWidth(stroke) / 2 + 2;
+      var margin = pens.strokeWidth(stroke) / 2 + 2;
       for (var j = 0; j < stroke.points.length; j += 1) {
         var point = stroke.points[j];
         left = Math.min(left, point[0] - margin);
@@ -397,7 +336,7 @@
     for (var i = strokes.length - 1; i >= 0; i -= 1) {
       var stroke = strokes[i], pts = stroke.points, hit = false;
       for (var j = 0; j < pts.length; j += 1) {
-        if (distanceToSegment(point, pts[j], pts[Math.min(j + 1, pts.length - 1)]) <= radius + inkWidth(stroke) / 2) { hit = true; break; }
+        if (distanceToSegment(point, pts[j], pts[Math.min(j + 1, pts.length - 1)]) <= radius + pens.strokeWidth(stroke) / 2) { hit = true; break; }
       }
       if (hit) {
         if (!gestureChanged) { remember(); gestureChanged = true; }
@@ -420,7 +359,7 @@
     var point = position(event); if (!point) { return; }
     remember(); current = { width: penWidths[pen], style: penStyle, points: [point] };
     strokes.push(current); pointCount += 1; activeSource = source; activeId = id;
-    message(''); configureInk(current); drawDot(point, inkWidth(current), current); updateButtons();
+    message(''); renderer.configure(context, current); renderer.dot(context, point, pens.strokeWidth(current), current); updateButtons();
   }
 
   function move(event, ending) {
@@ -443,7 +382,7 @@
     current.points.push(point); pointCount += 1;
     var count = current.points.length;
     var first = count === 2 ? previous : midpoint(current.points[count - 3], previous);
-    drawCurve(first, previous, midpoint(previous, point), inkWidth(current), current);
+    renderer.curve(context, first, previous, midpoint(previous, point), pens.strokeWidth(current), current);
   }
 
   function movePointer(event, ending) {
@@ -538,7 +477,7 @@
     finish(); var opening = widthOptions.hidden; closeOptions(); widthOptions.hidden = !opening;
     widthButton.setAttribute('aria-expanded', String(opening));
   };
-  ['pencil', 'sharp', 'brush'].forEach(function (style, index) {
+  pens.styles.forEach(function (style, index) {
     styleButtons[index].onclick = function () { penStyle = style; tool = 'pen'; closeOptions(); updateButtons(); message(penStyleNames[style]); save(); };
   });
   widthButtons.forEach(function (button, index) {

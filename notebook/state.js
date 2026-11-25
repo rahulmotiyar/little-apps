@@ -1,11 +1,11 @@
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
+    module.exports = factory(require('../pen-tools.js'));
   } else {
-    root.KindleNotebook = factory();
+    root.KindleNotebook = factory(root.LittleAppsPens);
   }
-}(this, function () {
+}(this, function (pens) {
   'use strict';
 
   var MAX_NOTES = 50;
@@ -64,7 +64,7 @@
     if (!array(strokes) || strokes.length > MAX_INK_STROKES) { return null; }
     for (i = 0; i < strokes.length; i += 1) {
       stroke = strokes[i];
-      if (!stroke || (stroke.width !== 3 && stroke.width !== 6 && stroke.width !== 12) || !array(stroke.points) || stroke.points.length < 1 || stroke.points.length > MAX_STROKE_POINTS) { return null; }
+      if (!stroke || pens.widths.indexOf(stroke.width) === -1 || (stroke.style !== undefined && pens.styles.indexOf(stroke.style) === -1) || !array(stroke.points) || stroke.points.length < 1 || stroke.points.length > MAX_STROKE_POINTS) { return null; }
       total += stroke.points.length;
       if (total > MAX_INK_POINTS) { return null; }
       points = [];
@@ -73,7 +73,9 @@
         if (!array(point) || point.length !== 2 || typeof point[0] !== 'number' || !isFinite(point[0]) || Math.abs(point[0]) > 100000 || typeof point[1] !== 'number' || !isFinite(point[1]) || Math.abs(point[1]) > 100000) { return null; }
         points.push([point[0], point[1]]);
       }
-      copy.push({ width: stroke.width, points: points });
+      var saved = { width: stroke.width, points: points };
+      if (stroke.style) { saved.style = stroke.style; }
+      copy.push(saved);
     }
     return copy;
   }
@@ -83,7 +85,7 @@
     var j;
     if (a.length !== b.length) { return false; }
     for (i = 0; i < a.length; i += 1) {
-      if (a[i].width !== b[i].width || a[i].points.length !== b[i].points.length) { return false; }
+      if (a[i].width !== b[i].width || a[i].style !== b[i].style || a[i].points.length !== b[i].points.length) { return false; }
       for (j = 0; j < a[i].points.length; j += 1) {
         if (a[i].points[j][0] !== b[i].points[j][0] || a[i].points[j][1] !== b[i].points[j][1]) { return false; }
       }

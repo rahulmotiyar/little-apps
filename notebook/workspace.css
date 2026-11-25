@@ -1,45 +1,49 @@
-/* The sidebar stays beside the note until the reader collapses it. */
+/* The index scrolls independently. Its menus open over the note workspace. */
 .notebook-page .notebook-layout { display:flex; position:relative; }
 .notebook-page .notes-list-panel { display:flex; flex:0 0 20%; flex-direction:column; width:20%; min-width:96px; max-width:240px; border-right:1px solid #777; overflow:hidden; background:var(--st-toolbar, #f3f3f3); }
 .notebook-page .notes-list-panel[hidden] { display:none; }
 #notes-list { flex:1; min-height:0; overflow:auto; }
 .notebook-page .notebook-heading { margin-bottom:0; min-height:0; width:auto; }
 .index-actions { display:flex; justify-content:flex-end; }
-.index-action, .section-more, .section-menu button { font:inherit; color:var(--st-ink, #1c1c1c); background:transparent; border:0; box-shadow:none; cursor:pointer; }
+.index-action, .section-more { font:inherit; color:var(--st-ink, #1c1c1c); background:transparent; border:0; box-shadow:none; cursor:pointer; }
 .index-action { display:flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; height:44px; padding:0; border-radius:8px; }
 .index-action .button-icon { margin:0; }
-#toggle-index { margin-left:-8px; }
+#toggle-index { margin-left:4px; }
 #toggle-index[aria-expanded="false"] { color:#666; }
-.index-action:active, .section-more:active, .section-more[aria-expanded="true"], .section-menu button:active { background:#c5c5c5; }
+.index-action:active, .section-more:active, .section-more[aria-expanded="true"] { background:#c5c5c5; }
 .notebook-item, .section-heading { font-family:inherit; }
-.section-header { display:flex; position:relative; align-items:center; border-bottom:1px solid #bbb; background:#fff; }
+.section-header, .note-row { border-bottom:1px solid #bbb; background:#fff; }
+.section-header { display:flex; align-items:stretch; }
 .section-header .section-heading { flex:1; min-width:0; border-bottom:0; }
-.section-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.note-row { position:relative; }
+.note-row .notebook-item-title { padding-right:32px; }
+.note-row .section-more { position:absolute; top:0; right:0; }
+.section-name, .notebook-item-time { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .section-form { flex:none; padding:8px; }
 .section-form-actions { flex-wrap:wrap; gap:4px; }
-.section-more { display:flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; height:48px; padding:0; }
+.section-more { display:flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; min-height:44px; padding:0; }
 .section-more svg { width:20px; height:20px; fill:currentColor; }
-.section-menu { position:absolute; top:100%; right:4px; z-index:4; width:220px; max-width:calc(100% - 8px); padding:4px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:var(--st-shadow); }
-.section-menu[hidden] { display:none; }
-.section-menu button { width:100%; min-height:44px; padding:8px; text-align:left; border-radius:6px; }
-.section-menu p { margin:4px 8px 8px; font-size:14px; line-height:1.4; color:#555; }
-.section-menu button:disabled { color:#888; }
-.notebook-page .note-tools.drawing-toolbar { position:relative; top:auto; right:auto; left:auto; bottom:auto; flex:0 0 52px; width:52px; height:auto; max-height:100%; padding:4px 3px 4px 4px; border:0; border-left:1px solid #777; border-radius:0; background:#fff; box-shadow:none; }
-.note-tools.drawing-toolbar .note-tool { flex:none; width:44px; min-width:44px; height:44px; min-height:44px; margin:0; padding:0; border:0; box-shadow:none; }
-.note-tools .note-tool span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
-.note-tools .note-tool .button-icon { margin:0; }
-.note-tools.drawing-toolbar .note-tool[aria-pressed="true"] { background:#1c1c1c; color:#fff; }
-.note-tools.drawing-toolbar .note-tool:disabled { background:transparent; color:#999; }
+.notebook-layout .notebook-popover { z-index:5; right:auto; max-width:100%; overflow:auto; }
+#index-menu { width:230px; }
+#index-menu button:disabled { color:#888; }
+#index-menu p { margin:6px 8px; font-size:14px; line-height:1.4; color:#555; overflow-wrap:break-word; }
+.note-confirm-actions { display:flex; flex-wrap:wrap; }
+.note-confirm-actions button { flex:1 1 auto; justify-content:center; width:auto; }
+.note-confirm-actions .confirm-delete { background:#1c1c1c; color:#fff; }
+.note-confirm-actions .confirm-delete:active { background:#555; }
 
-/* One header row and the same quiet-select used in the app bars. */
-.notebook-page .editor-heading { flex-wrap:nowrap; padding:8px 16px; }
-.notebook-page .editor-title { flex:1 1 auto; width:0; min-width:65px; font-size:23px; }
-.notebook-page .editor-meta { flex:0 1 auto; min-width:0; padding:0; border:0; flex-wrap:nowrap; white-space:nowrap; margin-left:8px; }
-.notebook-page .editor-meta time { flex:none; margin-left:8px; font-size:14px; }
-.notebook-page .editor-meta select { width:auto; max-width:120px; margin:0; }
-.notebook-page .editor-meta .quiet-select-wrap { flex:0 1 auto; min-width:44px; max-width:160px; }
+.notebook-page { --note-inset:16px; --note-rail-width:52px; }
+.notebook-page .notebook-editor { flex-direction:row; }
+.notebook-page .note-tools.drawing-toolbar { position:relative; top:auto; right:auto; flex:0 0 var(--note-rail-width); width:var(--note-rail-width); height:auto; max-height:none; padding:4px 4px 4px 3px; border-left:1px solid #777; background:#fff; }
+.notebook-page .editor-heading { flex-wrap:wrap; padding:8px var(--note-inset) 0; }
+.note-name { flex:1; min-width:0; }
+.notebook-page .editor-title { width:100%; min-height:38px; margin:0; padding:0; font-size:23px; }
+#note-timestamp { display:block; flex:0 0 100%; color:#444; font-size:14px; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.notebook-page .editor-meta { flex:0 1 auto; max-width:44%; min-width:0; margin-left:8px; }
+.notebook-page .editor-meta select { max-width:100%; min-height:44px; margin:0; font:inherit; font-size:16px; }
+.notebook-page .editor-meta .quiet-select-wrap { max-width:160px; min-width:0; }
 .notebook-page .editor-meta .quiet-select-trigger { min-height:44px; height:44px; max-width:100%; padding:0 8px; font-size:16px; }
-#timestamp-short { display:none; }
+
 /* Text and transparent ink occupy the same sheet; tools only change input. */
 .notebook-page .editor-paper .writing-mode,
 .notebook-page .editor-paper .drawing-mode { position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; }
@@ -48,14 +52,15 @@
 .notebook-page.tool-draw .editor-paper .drawing-mode,
 .notebook-page.tool-erase .editor-paper .drawing-mode { pointer-events:auto; }
 .notebook-page #note-drawing, .notebook-page .editor-body { background:transparent; }
-.notebook-page .editor-body { min-height:0; }
+.notebook-page .editor-body { min-height:0; padding:12px var(--note-inset); }
 #empty-notebook { overflow:auto; max-height:100%; }
 
-body.little-narrow .notebook-page .editor-heading { padding:4px 8px; }
-body.little-narrow .notebook-page .editor-title { min-height:44px; font-size:19px; }
+body.little-narrow .notebook-page { --note-inset:8px; --note-rail-width:44px; }
+body.little-narrow .notebook-page .note-tools.drawing-toolbar { padding-left:0; padding-right:0; }
+body.little-narrow .note-tools.drawing-toolbar .note-tool { width:43px; min-width:43px; }
+body.little-narrow .notebook-page .editor-title { font-size:19px; }
+body.little-narrow #note-timestamp { font-size:12px; }
 body.little-narrow .notebook-page .editor-meta { margin-left:4px; }
-body.little-narrow .notebook-page .editor-meta time { margin-left:4px; font-size:12px; }
 body.little-narrow .notebook-page .editor-meta .quiet-select-trigger { padding:0 4px; font-size:14px; }
-body.little-narrow #timestamp-full, body.little-narrow .section-count { display:none; }
-body.little-narrow #timestamp-short { display:inline; }
+body.little-narrow .section-count { display:none; }
 body.little-narrow .section-header .section-heading, body.little-narrow .notebook-item { padding-left:6px; padding-right:4px; }

@@ -2,6 +2,8 @@
   'use strict';
 
   var model = window.KindleNotebook;
+  var pens = window.LittleAppsPens;
+  var orientation = window.LittleAppsOrientation;
   var storageKey = 'little-apps.notebook.v2';
   var legacyKey = 'little-apps.notebook.v1';
   var state = model.create();
@@ -18,12 +20,15 @@
   var textGroupOpen = false;
   var lastTextEdit = 0;
   var mode = 'write';
-  var toolMessage = '';
+  var penStyle = 'sharp';
+  var penWidth = 1;
+  var eraserSize = 1;
   var formatter = null;
   var sectionBeingRenamed = null;
   var sectionFormAnchor = null;
-  var openSectionMenu = null;
+  var openMenu = null;
   var page = document.querySelector('.notebook-page');
+  var layout = document.querySelector('.notebook-layout');
   var list = document.getElementById('notes-list');
   var newButton = document.getElementById('new-note');
   var undoButton = document.getElementById('undo-remove');
@@ -35,26 +40,28 @@
   var cancelSection = document.getElementById('cancel-section');
   var noteSection = document.getElementById('note-section');
   var noteTimestamp = document.getElementById('note-timestamp');
-  var timestampFull = document.getElementById('timestamp-full');
-  var timestampShort = document.getElementById('timestamp-short');
-  var timestampLabel = document.getElementById('timestamp-label');
   var toggleIndex = document.getElementById('toggle-index');
   var indexPanel = document.getElementById('notebook-index');
   var exitLink = document.getElementById('exit');
   var titleInput = document.getElementById('editor-title');
   var bodyInput = document.getElementById('editor-body');
   var writeButton = document.getElementById('write-tool');
-  var drawButton = document.getElementById('draw-tool');
-  var eraseButton = document.getElementById('erase-tool');
+  var drawButton = document.getElementById('pen');
+  var eraseButton = document.getElementById('eraser');
+  var widthButton = document.getElementById('width');
+  var penOptions = document.getElementById('pen-options');
+  var widthOptions = document.getElementById('width-options');
+  var penChoices = penOptions.querySelectorAll('button');
+  var widthChoices = widthOptions.querySelectorAll('button');
+  var noteTools = document.getElementById('note-tools');
+  var indexMenu = document.getElementById('index-menu');
   var toolUndo = document.getElementById('undo-tool');
-  var removeButton = document.getElementById('remove-note');
   var writingMode = document.getElementById('writing-mode');
   var drawingMode = document.getElementById('drawing-mode');
   var empty = document.getElementById('empty-notebook');
   var editor = document.getElementById('editor');
   var storageStatus = document.getElementById('storage-status');
-  var editorStatus = document.getElementById('editor-status');
-  var toolStatus = document.getElementById('tool-status') || editorStatus;
+  var toolStatus = document.getElementById('tool-status');
 
   try {
     if (window.Intl && window.Intl.DateTimeFormat) {
@@ -90,24 +97,15 @@
       else if (note.updatedAt === null || note.updatedAt === note.createdAt) { prefix = 'Created '; }
       else { prefix = 'Updated '; }
     }
-    setText(timestampFull, prefix + date);
-    setText(timestampShort, date.replace(/\s+\d{4},?\s+/, ' · ').replace(/ UTC$/, ''));
-    setText(timestampLabel, prefix + date);
+    setText(noteTimestamp, prefix + date);
     noteTimestamp.setAttribute('title', prefix + date + (formatter && date ? ' (Europe/Amsterdam)' : ''));
     if (typeof value === 'number') { noteTimestamp.setAttribute('datetime', new Date(value).toISOString()); }
     else { noteTimestamp.removeAttribute('datetime'); }
   }
   function showStorageError(text) { setText(storageStatus, text); storageStatus.style.display = 'block'; }
   function setToolNotice(text) {
-    toolMessage = text || '';
-    setText(toolStatus, toolMessage);
-    if (toolStatus !== editorStatus) { toolStatus.style.display = toolMessage ? 'block' : 'none'; }
-  }
-  function updateSaveStatus() {
-    if (toolStatus === editorStatus && toolMessage) { setText(editorStatus, toolMessage); }
-    else if (writeBlocked) { setText(editorStatus, 'Changes stay in this page.'); }
-    else if (dirty) { setText(editorStatus, 'Unsaved changes'); }
-    else { setText(editorStatus, 'Saved on this device'); }
+    setText(toolStatus, text || '');
+    toolStatus.style.display = text ? 'block' : 'none';
   }
   function readSaved() {
     var raw;
@@ -140,24 +138,21 @@
   }
   function saveNow() {
     if (saveTimer !== null) { window.clearTimeout(saveTimer); saveTimer = null; }
-    if (!dirty || writeBlocked) { updateSaveStatus(); return !dirty; }
+    if (!dirty || writeBlocked) { return !dirty; }
     try {
       window.localStorage.setItem(storageKey, model.encode(state));
       dirty = false;
       needsMigration = false;
       setText(storageStatus, '');
       storageStatus.style.display = 'none';
-      updateSaveStatus();
       return true;
     } catch (error) {
       showStorageError('Your latest changes could not be saved. Keep this page open; saving will be tried again after your next edit.');
-      updateSaveStatus();
       return false;
     }
   }
   function scheduleSave() {
     if (saveTimer !== null) { window.clearTimeout(saveTimer); }
-    updateSaveStatus();
     saveTimer = window.setTimeout(function () { saveTimer = null; saveNow(); }, 350);
   }
   function noteTitle(note) { return note.title.replace(/^\s+|\s+$/g, '') || 'Untitled'; }
@@ -165,18 +160,106 @@
     var item = note && itemNodes['note-' + note.id];
     if (!item) { return; }
     setText(item.title, noteTitle(note));
+    item.more.setAttribute('aria-label', 'Options for ' + noteTitle(note));
     setText(item.time, dateLabel(note));
     if (typeof noteDate(note) === 'number') { item.time.setAttribute('datetime', new Date(noteDate(note)).toISOString()); }
   }
-  function closeSectionMenu() {
-    if (!openSectionMenu) { return; }
-    openSectionMenu.panel.hidden = true;
-    openSectionMenu.trigger.setAttribute('aria-expanded', 'false');
-    openSectionMenu = null;
+  function closeMenu() {
+    if (!openMenu) { return; }
+    openMenu.panel.hidden = true;
+    openMenu.trigger.setAttribute('aria-expanded', 'false');
+    openMenu = null;
+  }
+  function rect(element) { return orientation ? orientation.rect(element) : element.getBoundingClientRect(); }
+  function positionMenu() {
+    if (!openMenu) { return; }
+    var panel = openMenu.panel;
+    var workspace = rect(layout);
+    var fromIndex = panel === indexMenu;
+    var edge = fromIndex ? rect(indexPanel).right - workspace.left : rect(noteTools).left - workspace.left;
+    panel.style.maxWidth = Math.max(0, fromIndex ? workspace.width - edge : edge) + 'px';
+    panel.style.maxHeight = workspace.height + 'px';
+    panel.style.left = (fromIndex ? edge : edge - panel.offsetWidth) + 'px';
+    panel.style.top = Math.max(0, Math.min(rect(openMenu.trigger).top - workspace.top, workspace.height - panel.offsetHeight)) + 'px';
+  }
+  function showMenu(panel, trigger) {
+    closeMenu();
+    openMenu = { panel:panel, trigger:trigger };
+    panel.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    positionMenu();
+  }
+  function action(label, handler) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.onclick = handler;
+    return button;
+  }
+  function moreButton(id, showActions) {
+    var more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'section-more';
+    more.setAttribute('data-id', id);
+    more.setAttribute('aria-controls', 'index-menu');
+    more.setAttribute('aria-expanded', 'false');
+    more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>';
+    more.onclick = function () {
+      if (openMenu && openMenu.trigger === this) { closeMenu(); return; }
+      showActions(this.getAttribute('data-id'), this);
+    };
+    return more;
+  }
+  function showSectionActions(id, trigger) {
+    clearChildren(indexMenu);
+    var rename = action('Rename section', function () { closeMenu(); showSectionForm(id, trigger); });
+    var deletion = action('Delete section', function () {
+      flush();
+      if (model.removeSection(state, id)) {
+        dirty = true; renderAll(); saveNow();
+        focus(sectionNodes['section-' + state.activeSectionId] || newSectionButton);
+      }
+    });
+    deletion.disabled = state.sections.length < 2;
+    var explanation = document.createElement('p');
+    explanation.textContent = deletion.disabled ? 'Keep at least one section.' : 'Notes move to the first remaining section.';
+    indexMenu.appendChild(rename); indexMenu.appendChild(deletion); indexMenu.appendChild(explanation);
+    showMenu(indexMenu, trigger);
+    focus(rename);
+  }
+  function showNoteActions(id, trigger) {
+    clearChildren(indexMenu);
+    var deletion = action('Delete note…', function () {
+      var note = model.get(state, id);
+      if (!note) { closeMenu(); return; }
+      clearChildren(indexMenu);
+      var question = document.createElement('p');
+      question.id = 'note-delete-question';
+      question.textContent = 'Delete “' + noteTitle(note) + '”?';
+      var choices = document.createElement('div');
+      choices.className = 'note-confirm-actions';
+      choices.setAttribute('role', 'group');
+      choices.setAttribute('aria-labelledby', question.id);
+      var cancel = action('Cancel', function () { closeMenu(); focus(trigger); });
+      var confirm = action('Delete', function () {
+        flush();
+        if (!model.remove(state, id)) { return; }
+        dirty = true; renderAll(); saveNow();
+        focus(selectedNote() ? editor : newButton);
+      });
+      confirm.className = 'confirm-delete';
+      choices.appendChild(cancel); choices.appendChild(confirm);
+      indexMenu.appendChild(question); indexMenu.appendChild(choices);
+      positionMenu();
+      focus(cancel);
+    });
+    indexMenu.appendChild(deletion);
+    showMenu(indexMenu, trigger);
+    focus(deletion);
   }
   function renderList() {
     var scrollTop = list.scrollTop;
-    closeSectionMenu();
+    closeMenu();
     clearChildren(list);
     itemNodes = {};
     sectionNodes = {};
@@ -211,9 +294,12 @@
         time.className = 'notebook-item-time';
         button.appendChild(title); button.appendChild(time);
         button.onclick = function () { openNote(this.getAttribute('data-note-id')); };
-        itemNodes['note-' + note.id] = { button: button, title: title, time: time };
+        var noteMore = moreButton(note.id, showNoteActions);
+        var row = document.createElement('div'); row.className = 'note-row';
+        row.appendChild(button); row.appendChild(noteMore);
+        itemNodes['note-' + note.id] = { title: title, time: time, more: noteMore };
         updateListItem(note);
-        sectionNotes.appendChild(button);
+        sectionNotes.appendChild(row);
       }
       if (!count && section.id === 'unfiled' && section.name === 'Notes') { continue; }
       var counter = document.createElement('span');
@@ -224,39 +310,9 @@
       var sectionHeader = document.createElement('div');
       sectionHeader.className = 'section-header';
       sectionHeader.appendChild(heading);
-      var more = document.createElement('button');
-      more.type = 'button'; more.className = 'section-more';
+      var more = moreButton(section.id, showSectionActions);
       more.setAttribute('aria-label', 'Options for ' + section.name);
-      more.setAttribute('aria-expanded', 'false');
-      more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>';
-      var menu = document.createElement('div'); menu.className = 'section-menu'; menu.hidden = true;
-      var rename = document.createElement('button'); rename.type = 'button';
-      rename.textContent = 'Rename section';
-      rename.onclick = (function (id, button) { return function () {
-        closeSectionMenu();
-        showSectionForm(id, button);
-      }; }(section.id, more));
-      var deletion = document.createElement('button'); deletion.type = 'button';
-      deletion.textContent = 'Delete section'; deletion.disabled = state.sections.length < 2;
-      deletion.setAttribute('data-section-id', section.id);
-      deletion.onclick = function () {
-        flush();
-        if (model.removeSection(state, this.getAttribute('data-section-id'))) {
-          dirty = true; renderAll(); saveNow();
-        }
-      };
-      var explanation = document.createElement('p');
-      explanation.textContent = state.sections.length < 2 ? 'Keep at least one section.' : 'Notes move to the first remaining section.';
-      menu.appendChild(rename); menu.appendChild(deletion); menu.appendChild(explanation);
-      more.onclick = (function (panel, button) { return function () {
-        var wasOpen = !panel.hidden;
-        closeSectionMenu();
-        if (wasOpen) { return; }
-        openSectionMenu = { panel: panel, trigger: button };
-        panel.hidden = false;
-        button.setAttribute('aria-expanded', 'true');
-      }; }(menu, more));
-      sectionHeader.appendChild(more); sectionHeader.appendChild(menu);
+      sectionHeader.appendChild(more);
       group.appendChild(sectionHeader);
       group.appendChild(sectionNotes);
       list.appendChild(group);
@@ -267,6 +323,27 @@
   function updateUndoTool() {
     var available = selectedNote() && (mode === 'write' ? textHistory.length > 0 : ink && ink.canUndo());
     toolUndo.disabled = !available;
+  }
+  function updatePenControls() {
+    var erasing = mode === 'erase';
+    var size = erasing ? eraserSize : penWidth;
+    var sizeNames = erasing ? pens.eraserNames : pens.widthNames;
+    drawButton.setAttribute('data-style', penStyle);
+    drawButton.title = 'Pen: ' + pens.names[penStyle];
+    drawButton.setAttribute('aria-label', drawButton.title);
+    widthButton.className = 'tool-button note-tool pen-width-' + size;
+    widthButton.setAttribute('data-tool', erasing ? 'eraser' : 'pen');
+    widthButton.title = (erasing ? 'Eraser size: ' : 'Pen width: ') + sizeNames[size];
+    widthButton.setAttribute('aria-label', widthButton.title);
+    for (var i = 0; i < penChoices.length; i += 1) {
+      penChoices[i].setAttribute('aria-pressed', String(pens.styles[i] === penStyle));
+      widthChoices[i].setAttribute('aria-pressed', String(i === size));
+      setText(widthChoices[i], sizeNames[i]);
+    }
+    if (ink) {
+      ink.setPen(penStyle, penWidth);
+      ink.setEraserSize(eraserSize);
+    }
   }
   function applyMode(nextMode) {
     mode = nextMode;
@@ -279,6 +356,7 @@
     writeButton.setAttribute('aria-pressed', mode === 'write' ? 'true' : 'false');
     drawButton.setAttribute('aria-pressed', mode === 'draw' ? 'true' : 'false');
     eraseButton.setAttribute('aria-pressed', mode === 'erase' ? 'true' : 'false');
+    updatePenControls();
     if (ink) { if (mode !== 'write') { ink.setTool(mode); } ink.resize(); }
     updateUndoTool();
   }
@@ -297,12 +375,12 @@
     var note = selectedNote();
     editor.style.display = note ? '' : 'none';
     empty.style.display = note ? 'none' : '';
-    removeButton.disabled = !note;
     titleInput.disabled = !note;
     bodyInput.disabled = !note;
     writeButton.disabled = !note;
     drawButton.disabled = !note;
     eraseButton.disabled = !note;
+    widthButton.disabled = !note;
     titleInput.value = note ? note.title : '';
     bodyInput.value = note ? note.body : '';
     undoButton.hidden = !state.removed;
@@ -324,7 +402,6 @@
     renderSectionOptions(note);
     updateTimestamp(note);
     applyMode(mode);
-    updateSaveStatus();
   }
   function renderAll() { renderList(); loadEditor(); }
   function captureEditor(recordHistory) {
@@ -402,6 +479,7 @@
   function switchTool(nextMode) {
     if (!selectedNote()) { return; }
     flush();
+    closeMenu();
     setToolNotice('');
     applyMode(nextMode);
     if (nextMode === 'write') { focus(bodyInput); }
@@ -411,7 +489,7 @@
     flush();
     var note = model.add(state);
     if (!note) {
-      setText(editorStatus, 'Notebook is full. Delete a note to add another (50 notes maximum).');
+      setToolNotice('Notebook is full. Delete a note to add another (50 notes maximum).');
       return;
     }
     dirty = true;
@@ -445,19 +523,13 @@
   };
   toggleIndex.onclick = function () {
     flush();
+    closeMenu();
     indexPanel.hidden = !indexPanel.hidden;
     var label = indexPanel.hidden ? 'Expand sidebar' : 'Collapse sidebar';
     toggleIndex.setAttribute('aria-expanded', String(!indexPanel.hidden));
     toggleIndex.setAttribute('aria-label', label);
     toggleIndex.setAttribute('title', label);
     if (ink) { ink.resize(); }
-  };
-  removeButton.onclick = function () {
-    flush();
-    var note = selectedNote();
-    if (!note || !model.remove(state, note.id)) { return; }
-    dirty = true; renderAll();
-    saveNow(); focus(selectedNote() ? editor : indexPanel.hidden ? toggleIndex : newButton);
   };
   undoButton.onclick = function () {
     flush();
@@ -466,8 +538,28 @@
     dirty = true; renderAll(); saveNow(); focus(editor);
   };
   writeButton.onclick = function () { switchTool('write'); };
-  drawButton.onclick = function () { switchTool('draw'); };
+  drawButton.onclick = function () {
+    var opening = penOptions.hidden;
+    switchTool('draw');
+    if (opening) { showMenu(penOptions, drawButton); focus(penChoices[pens.styles.indexOf(penStyle)]); }
+  };
   eraseButton.onclick = function () { switchTool('erase'); };
+  widthButton.onclick = function () {
+    var opening = widthOptions.hidden;
+    switchTool(mode === 'erase' ? 'erase' : 'draw');
+    if (opening) { showMenu(widthOptions, widthButton); focus(widthChoices[mode === 'erase' ? eraserSize : penWidth]); }
+  };
+  pens.styles.forEach(function (style, index) {
+    penChoices[index].onclick = function () {
+      penStyle = style;
+      closeMenu(); updatePenControls(); focus(drawButton);
+    };
+    widthChoices[index].onclick = function () {
+      if (mode === 'erase') { eraserSize = index; }
+      else { penWidth = index; }
+      closeMenu(); updatePenControls(); focus(widthButton);
+    };
+  });
   toolUndo.onclick = function () {
     flush();
     var note = selectedNote();
@@ -490,9 +582,17 @@
   titleInput.onblur = flush;
   bodyInput.onblur = flush;
   exitLink.onclick = flush;
-  window.LittleAppsMenus.onOutsidePress(function () { return openSectionMenu; }, closeSectionMenu);
-  window.addEventListener('pagehide', flush, false);
-  window.addEventListener('resize', function () { if (ink) { ink.resize(); } }, false);
+  window.LittleAppsMenus.onOutsidePress(function () { return openMenu; }, closeMenu);
+  list.addEventListener('scroll', function () { if (openMenu && openMenu.panel === indexMenu) { closeMenu(); } });
+  document.addEventListener('keydown', function (event) {
+    if (openMenu && (event.key === 'Escape' || event.keyCode === 27)) {
+      var trigger = openMenu.trigger;
+      closeMenu(); focus(trigger); event.preventDefault();
+    }
+  }, false);
+  window.addEventListener('pagehide', function () { closeMenu(); flush(); }, false);
+  window.addEventListener('resize', positionMenu, false);
+  window.addEventListener('littleappsorientationchange', positionMenu, false);
   window.addEventListener('pageshow', function (event) {
     if (event.persisted && !dirty && !writeBlocked) {
       readSaved(); inkLoadedId = null; historyNoteId = null;

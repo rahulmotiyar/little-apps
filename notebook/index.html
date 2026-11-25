@@ -8,19 +8,19 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../productivity.css">
-  <link rel="stylesheet" href="styles.css?v=notebook-index-1">
+  <link rel="stylesheet" href="styles.css?v=notebook-tools-1">
   <link rel="stylesheet" href="../controls.css">
   <link rel="stylesheet" href="../still-apps.css?v=viewport-fit-3">
   <link rel="stylesheet" href="../drawing/toolbar.css?v=20261121-notebook-rail">
-  <link rel="stylesheet" href="workspace.css?v=notebook-index-1">
+  <link rel="stylesheet" href="workspace.css?v=notebook-tools-1">
   <link rel="stylesheet" href="../fullscreen.css?v=viewport-fit-3">
 </head>
 <body>
   <div class="tool-page notebook-page is-empty" id="notebook-page">
     <header class="tool-header notebook-header">
       <div class="notebook-heading">
-        <button class="index-action" id="toggle-index" type="button" aria-label="Collapse sidebar" aria-controls="notebook-index" aria-expanded="true" title="Collapse sidebar"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v14"/></svg></button>
         <h1 class="tool-title" data-lang-text="notebook">Notebook</h1>
+        <button class="index-action" id="toggle-index" type="button" aria-label="Collapse sidebar" aria-controls="notebook-index" aria-expanded="true" title="Collapse sidebar"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v14"/></svg></button>
       </div>
       <div class="tool-controls">
         <div class="tool-actions">
@@ -62,16 +62,18 @@
           <p class="save-explainer">Your notes save as you write.</p>
         </div>
         <div class="notebook-editor" id="editor" tabindex="-1" aria-label="Writing area" style="display:none">
-          <div class="editor-heading">
-            <label class="sr-only" for="editor-title">Title</label>
-            <input id="editor-title" class="editor-title" type="text" maxlength="120" placeholder="Untitled" autocomplete="off">
-            <div class="editor-meta">
-              <label class="sr-only" for="note-section">Section</label>
-              <select id="note-section" aria-label="Section" data-quiet-select></select>
-              <time id="note-timestamp"><span id="timestamp-full" aria-hidden="true"></span><span id="timestamp-short" aria-hidden="true"></span><span id="timestamp-label" class="sr-only"></span></time>
-            </div>
-          </div>
           <div class="editor-content">
+            <div class="editor-heading">
+              <div class="note-name">
+                <label class="sr-only" for="editor-title">Title</label>
+                <input id="editor-title" class="editor-title" type="text" maxlength="120" placeholder="Untitled" autocomplete="off">
+              </div>
+              <div class="editor-meta">
+                <label class="sr-only" for="note-section">Section</label>
+                <select id="note-section" aria-label="Section" data-quiet-select></select>
+              </div>
+              <time id="note-timestamp"></time>
+            </div>
             <div class="editor-paper">
               <div class="writing-mode" id="writing-mode">
                 <label class="sr-only" for="editor-body">Note</label>
@@ -82,28 +84,39 @@
               </div>
               <p class="note-tool-status" id="tool-status" role="status" aria-live="polite" style="display:none"></p>
             </div>
-            <aside class="note-tools drawing-toolbar" role="toolbar" aria-label="Note tools" aria-orientation="vertical" data-layout="vertical" data-dock="right">
-              <button class="tool-button note-tool" id="write-tool" type="button" aria-label="Write" title="Write" aria-pressed="true"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h16M12 5v15M8 20h8"/></svg><span>Write</span></button>
-              <button class="tool-button note-tool" id="draw-tool" type="button" aria-label="Draw" title="Draw" aria-pressed="false"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 15 16 3l5 5L9 20l-6 1 1-6ZM13 6l5 5"/></svg><span>Draw</span></button>
-              <button class="tool-button note-tool" id="erase-tool" type="button" aria-label="Erase" title="Erase" aria-pressed="false"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 13 9-10 9 8-9 10H9l-5-4v-4ZM8 9l9 8M13 21h9"/></svg><span>Erase</span></button>
-              <span class="drawing-tool-divider drawing-actions-start" aria-hidden="true"></span>
-              <button class="tool-button note-tool" id="undo-tool" type="button" aria-label="Undo" data-lang-label="undo" title="Undo" data-lang-title="undo" disabled><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg><span>Undo</span></button>
-              <button class="tool-button note-tool" id="remove-note" type="button" aria-label="Delete note" title="Delete note"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg><span>Delete</span></button>
-            </aside>
           </div>
-          <p class="editor-status" id="editor-status" role="status" aria-live="polite"></p>
+          <aside class="note-tools drawing-toolbar" id="note-tools" role="toolbar" aria-label="Note tools" aria-orientation="vertical" data-layout="vertical" data-dock="right">
+            <button class="tool-button note-tool" id="write-tool" type="button" aria-label="Write" title="Write" aria-pressed="true"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h16M12 5v15M8 20h8"/></svg></button>
+            <button class="tool-button note-tool" id="pen" type="button" aria-label="Pen" aria-pressed="false" aria-expanded="false" aria-controls="pen-options" data-style="sharp" title="Pen"><svg class="button-icon pen-style-icon pencil-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.8L16 4.5a2.1 2.1 0 0 1 3 3L8.3 18.2 4 20zm9.8-13.3 3.5 3.5"/></svg><svg class="button-icon pen-style-icon sharp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 7 12l9-9 5 5-9 9-8 3ZM7 12l5 5M4 20l5.5-5.5"/></svg><svg class="button-icon pen-style-icon brush-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14 17.5 4a2 2 0 0 1 2.8 2.8L13 16M10 14c-3 0-3 2-3 3.5S6 20 4 20c4 2 9 0 9-4l-3-2z"/></svg></button>
+            <button class="tool-button note-tool" id="width" type="button" aria-label="Pen width" aria-expanded="false" aria-controls="width-options" title="Pen width"><svg class="button-icon size-icon ink-size-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/></svg><svg class="button-icon size-icon eraser-size-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3" transform="rotate(45 12 12)"/></svg></button>
+            <button class="tool-button note-tool" id="eraser" type="button" aria-label="Eraser" aria-pressed="false" title="Eraser"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14 13 5a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L10 20H7zM9 9l6 6M10 20h10"/></svg></button>
+            <span class="drawing-tool-divider drawing-actions-start" aria-hidden="true"></span>
+            <button class="tool-button note-tool" id="undo-tool" type="button" aria-label="Undo" data-lang-label="undo" title="Undo" data-lang-title="undo" disabled><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg></button>
+          </aside>
         </div>
       </section>
+      <div class="draw-subtools notebook-popover" id="index-menu" hidden></div>
+      <div class="draw-subtools notebook-popover pen-subtools" id="pen-options" role="group" aria-label="Pen type" hidden>
+        <button type="button" id="pen-pencil" aria-pressed="false"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.8L16 4.5a2.1 2.1 0 0 1 3 3L8.3 18.2 4 20zm9.8-13.3 3.5 3.5"/></svg>Pencil</button>
+        <button type="button" id="pen-sharp" aria-pressed="true"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 7 12l9-9 5 5-9 9-8 3ZM7 12l5 5M4 20l5.5-5.5"/></svg>Sharp pen</button>
+        <button type="button" id="pen-brush" aria-pressed="false"><svg class="pen-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14 17.5 4a2 2 0 0 1 2.8 2.8L13 16M10 14c-3 0-3 2-3 3.5S6 20 4 20c4 2 9 0 9-4l-3-2z"/></svg>Brush</button>
+      </div>
+      <div class="draw-subtools notebook-popover width-subtools" id="width-options" role="group" aria-label="Tool size" hidden>
+        <button type="button" id="width-fine" aria-pressed="false">Fine</button>
+        <button type="button" id="width-medium" aria-pressed="true">Medium</button>
+        <button type="button" id="width-thick" aria-pressed="false">Thick</button>
+      </div>
     </main>
     <noscript><p>Enable JavaScript in your browser to write notes.</p></noscript>
   </div>
   <script src="../fullscreen.js?v=1"></script>
   <script src="../language.js?v=1"></script>
   <script src="../orientation.js?v=viewport-fit-3"></script>
-  <script src="state.js?v=notebook-index-1"></script>
-  <script src="ink.js?v=20261121-manual-rotation-v2"></script>
+  <script src="../pen-tools.js?v=1"></script>
+  <script src="state.js?v=notebook-tools-1"></script>
+  <script src="ink.js?v=notebook-tools-1"></script>
   <script src="../menu-dismiss.js?v=1"></script>
-  <script src="app.js?v=outside-press"></script>
+  <script src="app.js?v=notebook-tools-1"></script>
   <script src="../dropdowns.js?v=outside-press"></script>
 </body>
 </html>
