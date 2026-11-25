@@ -54,14 +54,7 @@
     });
     document.body.appendChild(panel); opened = { view: view, panel: panel, trigger: view.trigger };
     view.trigger.setAttribute('aria-expanded', 'true');
-    var orient = window.LittleAppsOrientation;
-    var rect = orient ? orient.rect(view.trigger) : view.trigger.getBoundingClientRect();
-    var dims = orient ? orient.dimensions() : { width:window.innerWidth, height:window.innerHeight };
-    var width = Math.min(dims.width - 28, Math.max(218, rect.width));
-    panel.style.width = width + 'px'; panel.style.left = Math.max(14, Math.min(rect.left, dims.width - width - 14)) + 'px';
-    var below = dims.height - rect.bottom - 14; var above = rect.top - 14;
-    var height = Math.min(panel.scrollHeight + 2, 360, Math.max(below, above));
-    panel.style.maxHeight = height + 'px'; panel.style.top = (below >= height ? rect.bottom : Math.max(8, rect.top - height)) + 'px';
+    window.LittleAppsMenus.place(panel, view.trigger, 'bottom', { minWidth:218, maxHeight:360, crossInset:14 });
     (rows[view.source.selectedIndex] || rows[0]).focus();
   }
   Array.prototype.forEach.call(document.querySelectorAll('.tool-actions select, select[data-quiet-select]'), function (source, index) {

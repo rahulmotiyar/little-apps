@@ -3,7 +3,6 @@
 
   var model = window.KindleNotebook;
   var pens = window.LittleAppsPens;
-  var orientation = window.LittleAppsOrientation;
   var storageKey = 'little-apps.notebook.v2';
   var legacyKey = 'little-apps.notebook.v1';
   var state = model.create();
@@ -53,7 +52,6 @@
   var widthOptions = document.getElementById('width-options');
   var penChoices = penOptions.querySelectorAll('button');
   var widthChoices = widthOptions.querySelectorAll('button');
-  var noteTools = document.getElementById('note-tools');
   var indexMenu = document.getElementById('index-menu');
   var toolUndo = document.getElementById('undo-tool');
   var writingMode = document.getElementById('writing-mode');
@@ -170,17 +168,10 @@
     openMenu.trigger.setAttribute('aria-expanded', 'false');
     openMenu = null;
   }
-  function rect(element) { return orientation ? orientation.rect(element) : element.getBoundingClientRect(); }
   function positionMenu() {
     if (!openMenu) { return; }
     var panel = openMenu.panel;
-    var workspace = rect(layout);
-    var fromIndex = panel === indexMenu;
-    var edge = fromIndex ? rect(indexPanel).right - workspace.left : rect(noteTools).left - workspace.left;
-    panel.style.maxWidth = Math.max(0, fromIndex ? workspace.width - edge : edge) + 'px';
-    panel.style.maxHeight = workspace.height + 'px';
-    panel.style.left = (fromIndex ? edge : edge - panel.offsetWidth) + 'px';
-    panel.style.top = Math.max(0, Math.min(rect(openMenu.trigger).top - workspace.top, workspace.height - panel.offsetHeight)) + 'px';
+    window.LittleAppsMenus.place(panel, openMenu.trigger, panel === indexMenu ? 'right' : 'left', { container:layout });
   }
   function showMenu(panel, trigger) {
     closeMenu();

@@ -23,29 +23,13 @@
     toolbar.setAttribute('aria-orientation', layout);
   }
   function placeMenus() {
-    var m = metrics();
+    var dock = toolbar.getAttribute('data-dock');
+    var vertical = toolbar.getAttribute('data-layout') === 'vertical';
+    var side = vertical ? (dock === 'right' ? 'left' : 'right') : (dock === 'bottom' ? 'top' : 'bottom');
     [ [penOptions, pen], [widthOptions, width] ].forEach(function (item) {
-      var menu = item[0], anchor = item[1];
-      if (menu.hidden) { return; }
-      var button = logicalRect(anchor);
-      var w = menu.offsetWidth, h = menu.offsetHeight;
-      var buttonLeft = (button.left - m.bounds.left) * m.sx;
-      var buttonRight = (button.right - m.bounds.left) * m.sx;
-      var buttonTop = (button.top - m.bounds.top) * m.sy;
-      var buttonBottom = (button.bottom - m.bounds.top) * m.sy;
-      var x, y;
-      if (toolbar.getAttribute('data-layout') === 'vertical') {
-        var left = buttonLeft, right = paper.clientWidth - buttonRight;
-        x = right >= w || right >= left ? buttonRight : buttonLeft - w;
-        y = buttonTop;
-      } else {
-        var below = paper.clientHeight - buttonBottom;
-        var above = buttonTop;
-        x = buttonLeft;
-        y = below >= h || below >= above ? buttonBottom : buttonTop - h;
+      if (!item[0].hidden) {
+        window.LittleAppsMenus.place(item[0], item[1], side, { container:paper });
       }
-      menu.style.right = 'auto'; menu.style.left = clamp(x, 0, Math.max(0, paper.clientWidth - w)) + 'px';
-      menu.style.top = clamp(y, 0, Math.max(0, paper.clientHeight - h)) + 'px';
     });
   }
   function setPixels(x, y, edge) {

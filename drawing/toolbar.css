@@ -29,9 +29,8 @@
 .drawing-toolbar .icon-pen[aria-pressed="true"]::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
 
 /* Contextual options sit next to the active edge tool. */
-.draw-subtools { position:absolute; z-index:3; right:76px; top:12px; width:170px; max-width:calc(100% - 88px); padding:4px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:0 1px 0 #ccc; }
+.draw-subtools { position:absolute; z-index:3; width:170px; box-sizing:border-box; overflow:auto; padding:4px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:0 1px 0 #ccc; }
 .draw-subtools[hidden] { display:none; }
-.width-subtools { top:60px; }
 .draw-subtools button { display:flex; align-items:center; width:100%; min-height:44px; padding:8px 10px; border:0; border-radius:6px; background:transparent; color:#1c1c1c; font-size:16px; text-align:left; }
 .draw-subtools button[aria-pressed="true"] { background:#e2e2e2; font-weight:600; }
 .draw-subtools button:active { background:#c5c5c5; }
@@ -59,7 +58,7 @@
 
 /* The current drawing opens a compact, touch-friendly file library. */
 .drawing-page .tool-header { position:relative; z-index:5; }
-.drawing-file-wrap { flex:1 1 auto; min-width:0; position:relative; }
+.drawing-file-wrap { display:flex; align-items:center; flex:1 1 auto; min-width:0; position:relative; }
 .drawing-file-button { display:inline-flex; align-items:center; max-width:100%; min-height:44px; padding:0 10px; border:0; border-radius:8px; background:transparent; color:#1c1c1c; font-size:16px; cursor:pointer; }
 .drawing-file-button[aria-expanded="true"], .drawing-file-button:active { background:#c5c5c5; }
 .drawing-file-button #file-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
