@@ -547,10 +547,12 @@
       closeOptions(); updateButtons(); message((tool === 'eraser' ? 'Eraser: ' + eraserNames[index] : penStyleNames[penStyle] + ': ' + penNames[index])); save();
     };
   });
-  document.addEventListener('click', function (event) {
-    if (!penOptions.hidden && !penOptions.contains(event.target) && !penButton.contains(event.target)) { closeOptions(); }
-    if (!widthOptions.hidden && !widthOptions.contains(event.target) && !widthButton.contains(event.target)) { closeOptions(); }
-  });
+  var penMenu = { panel: penOptions, trigger: penButton };
+  var widthMenu = { panel: widthOptions, trigger: widthButton };
+  window.LittleAppsMenus.onOutsidePress(function () {
+    if (!penOptions.hidden) { return penMenu; }
+    return widthOptions.hidden ? null : widthMenu;
+  }, closeOptions);
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') { closeOptions(); } });
   zoomButton.onclick = function () {
     closeOptions(); finish(); var oldZoom = zoomSteps[zoomIndex]; zoomIndex = (zoomIndex + 1) % zoomSteps.length;

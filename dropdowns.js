@@ -49,7 +49,7 @@
         if (event.key === 'Tab') { close(true); }
       };
     });
-    document.body.appendChild(panel); opened = { view: view, panel: panel };
+    document.body.appendChild(panel); opened = { view: view, panel: panel, trigger: view.trigger };
     view.trigger.setAttribute('aria-expanded', 'true');
     var orient = window.LittleAppsOrientation;
     var rect = orient ? orient.rect(view.trigger) : view.trigger.getBoundingClientRect();
@@ -75,7 +75,9 @@
     source.addEventListener('change', sync);
     new MutationObserver(sync).observe(source, { attributes: true, attributeFilter: ['disabled'], childList:true, subtree:true });
   });
-  document.addEventListener('click', function (event) { if (opened && !opened.panel.contains(event.target) && !opened.view.trigger.contains(event.target)) { close(false); } });
+  if (views.length) {
+    window.LittleAppsMenus.onOutsidePress(function () { return opened; }, function () { close(false); });
+  }
   window.addEventListener('resize', function () { close(false); });
   window.addEventListener('littleappsorientationchange', function () { close(false); sync(); });
   window.addEventListener('pagehide', function () { close(false); });

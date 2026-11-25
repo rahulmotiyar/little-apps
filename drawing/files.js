@@ -104,8 +104,6 @@
     connect:function (api) { bridge = api; }
   };
   button.onclick = function () { if (!menu.hidden) { close(); return; } menu.hidden = false; button.setAttribute('aria-expanded', 'true'); render(); };
-  // A menu action can replace its own DOM node before the event reaches the document.
-  menu.addEventListener('click', function (event) { event.stopPropagation(); });
   document.getElementById('file-rename-save').onclick = rename;
   input.addEventListener('keydown', function (event) { if (event.key === 'Enter') { event.preventDefault(); rename(); } });
   document.getElementById('file-new').onclick = function () {
@@ -172,7 +170,8 @@
       request.send(JSON.stringify({ image:image }));
     } catch (error) { shareRequest = null; shareMessage.textContent = 'Could not create a link. Make sure Little Apps is running and try again.'; }
   };
-  document.addEventListener('click', function (event) { if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) { close(); } });
+  var fileMenu = { panel: menu, trigger: button };
+  window.LittleAppsMenus.onOutsidePress(function () { return menu.hidden ? null : fileMenu; }, close);
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') { close(); } });
   render();
 }());

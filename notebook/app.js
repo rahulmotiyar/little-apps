@@ -22,6 +22,7 @@
   var formatter = null;
   var sectionBeingRenamed = null;
   var sectionFormAnchor = null;
+  var openSectionMenu = null;
   var page = document.querySelector('.notebook-page');
   var list = document.getElementById('notes-list');
   var newButton = document.getElementById('new-note');
@@ -167,8 +168,15 @@
     setText(item.time, dateLabel(note));
     if (typeof noteDate(note) === 'number') { item.time.setAttribute('datetime', new Date(noteDate(note)).toISOString()); }
   }
+  function closeSectionMenu() {
+    if (!openSectionMenu) { return; }
+    openSectionMenu.panel.hidden = true;
+    openSectionMenu.trigger.setAttribute('aria-expanded', 'false');
+    openSectionMenu = null;
+  }
   function renderList() {
     var scrollTop = list.scrollTop;
+    closeSectionMenu();
     clearChildren(list);
     itemNodes = {};
     sectionNodes = {};
@@ -224,11 +232,10 @@
       var menu = document.createElement('div'); menu.className = 'section-menu'; menu.hidden = true;
       var rename = document.createElement('button'); rename.type = 'button';
       rename.textContent = 'Rename section';
-      rename.onclick = (function (id, panel, button) { return function () {
-        panel.hidden = true;
-        button.setAttribute('aria-expanded', 'false');
+      rename.onclick = (function (id, button) { return function () {
+        closeSectionMenu();
         showSectionForm(id, button);
-      }; }(section.id, menu, more));
+      }; }(section.id, more));
       var deletion = document.createElement('button'); deletion.type = 'button';
       deletion.textContent = 'Delete section'; deletion.disabled = state.sections.length < 2;
       deletion.setAttribute('data-section-id', section.id);
@@ -243,9 +250,11 @@
       menu.appendChild(rename); menu.appendChild(deletion); menu.appendChild(explanation);
       more.onclick = (function (panel, button) { return function () {
         var wasOpen = !panel.hidden;
-        Array.prototype.forEach.call(list.querySelectorAll('.section-menu'), function (node) { node.hidden = true; });
-        Array.prototype.forEach.call(list.querySelectorAll('.section-more'), function (node) { node.setAttribute('aria-expanded', 'false'); });
-        panel.hidden = wasOpen; button.setAttribute('aria-expanded', String(!wasOpen));
+        closeSectionMenu();
+        if (wasOpen) { return; }
+        openSectionMenu = { panel: panel, trigger: button };
+        panel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
       }; }(menu, more));
       sectionHeader.appendChild(more); sectionHeader.appendChild(menu);
       group.appendChild(sectionHeader);
@@ -481,6 +490,7 @@
   titleInput.onblur = flush;
   bodyInput.onblur = flush;
   exitLink.onclick = flush;
+  window.LittleAppsMenus.onOutsidePress(function () { return openSectionMenu; }, closeSectionMenu);
   window.addEventListener('pagehide', flush, false);
   window.addEventListener('resize', function () { if (ink) { ink.resize(); } }, false);
   window.addEventListener('pageshow', function (event) {
