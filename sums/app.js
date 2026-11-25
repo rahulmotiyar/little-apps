@@ -3,6 +3,8 @@
 
   var engine = window.KindleSums;
   var flow = window.LittleGameFlow.create();
+  var orientation = window.LittleAppsOrientation;
+  var equationScales = { '3': 0.20, '4': 0.17, '5': 0.14 };
   var state;
   var displayed = null;
   var displayedIndex = 0;
@@ -18,6 +20,7 @@
   var starsContainer = document.getElementById('stars');
   var progress = document.getElementById('progress-copy');
   var prompt = document.getElementById('question-prompt');
+  var questionAnchor = document.getElementById('question-anchor');
   var equation = document.getElementById('equation');
   var left = document.getElementById('left-number');
   var operator = document.getElementById('operator');
@@ -172,6 +175,17 @@
     return parts.join(' + ') || '0';
   }
 
+  function sizeEquation() {
+    var width = questionAnchor.clientWidth;
+    if (!width) { return; }
+    var viewport = orientation ? orientation.dimensions() : { width:window.innerWidth, height:window.innerHeight };
+    var landscape = viewport.width >= 480 && viewport.width > viewport.height;
+    var heightLimit = landscape ? viewport.height * 0.22 : (viewport.height - 220) * 0.31;
+    // Reserve space for the longest answered sum in the group.
+    var size = Math.max(16, Math.floor(Math.min(width * equationScales[state.group], heightLimit, 132))) + 'px';
+    if (equation.style.fontSize !== size) { equation.style.fontSize = size; }
+  }
+
   function renderQuestion() {
     displayed = engine.question(state);
     displayedIndex = state.index;
@@ -205,6 +219,7 @@
     level.value = state.group;
     mode.value = state.mode;
     renderQuestion();
+    sizeEquation();
   }
 
   function chooseAnswer(index) {
@@ -289,8 +304,12 @@
   }, false);
   window.addEventListener('pageshow', function () {
     if (flow.resume()) { startRound('3', 'add'); }
-    else if (resultOpen) { flow.schedule(resetSameSettings, 2600); }
-    else if (waitingNext) { flow.schedule(nextQuestion, 1000); }
+    else {
+      sizeEquation();
+      if (resultOpen) { flow.schedule(resetSameSettings, 2600); }
+      else if (waitingNext) { flow.schedule(nextQuestion, 1000); }
+    }
   }, false);
+  window.addEventListener(orientation ? 'littleappsorientationchange' : 'resize', sizeEquation, false);
   startRound('3', 'add');
 }());
