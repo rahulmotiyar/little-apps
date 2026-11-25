@@ -8,7 +8,6 @@
   var displayedIndex = 0;
   var waitingNext = false;
   var resultOpen = false;
-  var exited = false;
   var selectedLetters = [];
   var readingButtons = [];
   var letterButtons = [];
@@ -243,11 +242,6 @@
     focus(state.activity === 'read' ? readingButtons[0] : letterButtons[0]);
   }
 
-  function exitGame() {
-    exited = true;
-    startRound('3', 'read');
-  }
-
   for (var i = 0; i < 5; i += 1) { stars.push(document.getElementById('star-' + i)); }
   undoLetter.onclick = function () {
     if (resultOpen || waitingNext || state.activity !== 'spell' || !selectedLetters.length) { return; }
@@ -271,8 +265,8 @@
   resultNew.onclick = function () {
     if (resultOpen) { startRound(state.group, state.activity); focus(state.activity === 'read' ? readingButtons[0] : letterButtons[0]); }
   };
-  exit.onclick = exitGame;
-  resultExit.onclick = exitGame;
+  exit.onclick = flow.exit;
+  resultExit.onclick = flow.exit;
   document.addEventListener('keydown', function (event) {
     if (!resultOpen) { return; }
     var key = event.key || event.keyCode;
@@ -285,7 +279,7 @@
     if (resultOpen && event.target !== resultNew && event.target !== resultExit) { focus(resultNew); }
   }, false);
   window.addEventListener('pageshow', function () {
-    if (exited) { exited = false; startRound('3', 'read'); }
+    if (flow.resume()) { startRound('3', 'read'); }
     else if (resultOpen) { scheduleResult(); }
     else if (waitingNext) { flow.schedule(nextQuestion, 1000); }
   }, false);

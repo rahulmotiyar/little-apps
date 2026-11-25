@@ -6,6 +6,7 @@
     var pending = null;
     var timer = null;
     var generation = 0;
+    var leaving = false;
 
     function clearTimer() {
       generation += 1;
@@ -32,9 +33,23 @@
 
     function schedule(callback, delay) {
       cancel();
-      if (typeof callback !== 'function') { return; }
+      if (leaving || typeof callback !== 'function') { return; }
       pending = { callback: callback, delay: typeof delay === 'number' && isFinite(delay) && delay >= 0 ? delay : 1000 };
       arm();
+    }
+
+    // Let the link navigate normally while keeping the current board on screen.
+    function exit(event) {
+      if (event && (event.defaultPrevented || event.button > 0 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)) { return; }
+      leaving = true;
+      cancel();
+      return true;
+    }
+
+    function resume() {
+      var exited = leaving;
+      leaving = false;
+      return exited;
     }
 
     function visibilityChanged() {
@@ -44,7 +59,7 @@
 
     document.addEventListener('visibilitychange', visibilityChanged);
     root.addEventListener('pagehide', cancel);
-    return { schedule: schedule, cancel: cancel };
+    return { schedule: schedule, cancel: cancel, exit: exit, resume: resume };
   }
 
   root.LittleGameFlow = { create: create };

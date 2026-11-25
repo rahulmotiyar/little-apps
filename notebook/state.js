@@ -135,21 +135,34 @@
     return true;
   }
 
-  function addSection(state, name) {
+  function availableSectionName(state, name, currentId) {
     var clean;
-    var section;
-    var i;
-    if (typeof name !== 'string' || state.sections.length >= MAX_SECTIONS || state.nextSectionId >= MAX_SEQUENCE) { return null; }
+    if (typeof name !== 'string') { return null; }
     clean = name.replace(/^\s+|\s+$/g, '');
     if (!clean || clean.length > MAX_SECTION_NAME) { return null; }
-    for (i = 0; i < state.sections.length; i += 1) {
-      if (state.sections[i].name.replace(/^\s+|\s+$/g, '').toLowerCase() === clean.toLowerCase()) { return null; }
-    }
-    section = { id: 'section-' + state.nextSectionId, name: clean };
+    var duplicate = state.sections.some(function (section) {
+      return section.id !== currentId && section.name.trim().toLowerCase() === clean.toLowerCase();
+    });
+    return duplicate ? null : clean;
+  }
+
+  function addSection(state, name) {
+    if (state.sections.length >= MAX_SECTIONS || state.nextSectionId >= MAX_SEQUENCE) { return null; }
+    var clean = availableSectionName(state, name);
+    if (!clean) { return null; }
+    var section = { id: 'section-' + state.nextSectionId, name: clean };
     state.nextSectionId += 1;
     state.sections.push(section);
     state.activeSectionId = section.id;
     state.activeId = null;
+    return section;
+  }
+
+  function renameSection(state, id, name) {
+    var section = getSection(state, id);
+    var clean = availableSectionName(state, name, id);
+    if (!section || !clean) { return null; }
+    section.name = clean;
     return section;
   }
 
@@ -324,5 +337,5 @@
     return state;
   }
 
-  return { create: create, add: add, get: get, select: select, update: update, remove: remove, undoRemove: undoRemove, encode: encode, decode: decode, addSection: addSection, removeSection: removeSection, getSection: getSection, selectSection: selectSection, move: move, updateInk: updateInk, maxNotes: MAX_NOTES, maxTitle: MAX_TITLE, maxBody: MAX_BODY, maxSections: MAX_SECTIONS, maxSectionName: MAX_SECTION_NAME, maxInkStrokes: MAX_INK_STROKES, maxInkPoints: MAX_INK_POINTS, maxStrokePoints: MAX_STROKE_POINTS };
+  return { create: create, add: add, get: get, select: select, update: update, remove: remove, undoRemove: undoRemove, encode: encode, decode: decode, addSection: addSection, renameSection: renameSection, removeSection: removeSection, getSection: getSection, selectSection: selectSection, move: move, updateInk: updateInk, maxNotes: MAX_NOTES, maxTitle: MAX_TITLE, maxBody: MAX_BODY, maxSections: MAX_SECTIONS, maxSectionName: MAX_SECTION_NAME, maxInkStrokes: MAX_INK_STROKES, maxInkPoints: MAX_INK_POINTS, maxStrokePoints: MAX_STROKE_POINTS };
 }));

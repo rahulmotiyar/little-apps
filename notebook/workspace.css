@@ -1,54 +1,45 @@
-/* The notebook keeps its index beside the page at every reader size. */
+/* The sidebar stays beside the note until the reader collapses it. */
 .notebook-page .notebook-layout { display:flex; position:relative; }
-.notebook-page .notes-list-panel { display:block; flex:0 0 270px; width:270px; height:auto; border-right:1px solid #777; background:var(--st-toolbar, #f3f3f3); }
-.notebook-page .notebook-workspace { display:flex; width:auto; height:auto; }
-.notebook-page #show-notes { display:none; }
-.notebook-page .notebook-heading .tool-title { display:block; }
-.notebook-page .notebook-heading { margin-bottom:0; min-height:0; }
-.index-heading { flex-wrap:wrap; padding:8px 12px; }
-.index-actions { display:flex; margin-left:auto; }
+.notebook-page .notes-list-panel { display:flex; flex:0 0 20%; flex-direction:column; width:20%; min-width:96px; max-width:240px; border-right:1px solid #777; overflow:hidden; background:var(--st-toolbar, #f3f3f3); }
+.notebook-page .notes-list-panel[hidden] { display:none; }
+#notes-list { flex:1; min-height:0; overflow:auto; }
+.notebook-page .notebook-heading { margin-bottom:0; min-height:0; width:auto; }
+.index-actions { display:flex; justify-content:flex-end; }
 .index-action, .section-more, .section-menu button { font:inherit; color:var(--st-ink, #1c1c1c); background:transparent; border:0; box-shadow:none; cursor:pointer; }
-.index-action { min-height:44px; padding:8px; border-radius:8px; }
+.index-action { display:flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; height:44px; padding:0; border-radius:8px; }
+.index-action .button-icon { margin:0; }
+#toggle-index { margin-left:-8px; }
+#toggle-index[aria-expanded="false"] { color:#666; }
 .index-action:active, .section-more:active, .section-more[aria-expanded="true"], .section-menu button:active { background:#c5c5c5; }
 .notebook-item, .section-heading { font-family:inherit; }
 .section-header { display:flex; position:relative; align-items:center; border-bottom:1px solid #bbb; background:#fff; }
 .section-header .section-heading { flex:1; min-width:0; border-bottom:0; }
+.section-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.section-form { flex:none; padding:8px; }
+.section-form-actions { flex-wrap:wrap; gap:4px; }
 .section-more { display:flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; height:48px; padding:0; }
 .section-more svg { width:20px; height:20px; fill:currentColor; }
 .section-menu { position:absolute; top:100%; right:4px; z-index:4; width:220px; max-width:calc(100% - 8px); padding:4px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:var(--st-shadow); }
 .section-menu[hidden] { display:none; }
-.section-menu button { width:100%; min-height:44px; padding:8px 12px; text-align:left; border-radius:6px; }
-.section-menu p { margin:4px 12px 8px; font-size:14px; line-height:1.4; color:#555; }
+.section-menu button { width:100%; min-height:44px; padding:8px; text-align:left; border-radius:6px; }
+.section-menu p { margin:4px 8px 8px; font-size:14px; line-height:1.4; color:#555; }
 .section-menu button:disabled { color:#888; }
-.editor-heading { align-items:center; padding:12px 18px; }
-.editor-title { width:0; font-size:23px; }
-.editor-meta { flex:0 1 auto; justify-content:flex-end; margin-left:16px; max-width:55%; padding:0; border:0; text-align:right; }
-.editor-meta label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
-.editor-meta select { min-height:36px; max-width:140px; margin:0; padding:4px 8px; border:0; border-radius:8px; }
-.editor-meta time { display:block; width:100%; margin:0; font-size:14px; }
 .notebook-page .note-tools.drawing-toolbar { position:relative; top:auto; right:auto; left:auto; bottom:auto; flex:0 0 52px; width:52px; height:auto; max-height:100%; padding:4px 3px 4px 4px; border:0; border-left:1px solid #777; border-radius:0; background:#fff; box-shadow:none; }
 .note-tools.drawing-toolbar .note-tool { flex:none; width:44px; min-width:44px; height:44px; min-height:44px; margin:0; padding:0; border:0; box-shadow:none; }
 .note-tools .note-tool span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
 .note-tools .note-tool .button-icon { margin:0; }
 .note-tools.drawing-toolbar .note-tool[aria-pressed="true"] { background:#1c1c1c; color:#fff; }
 .note-tools.drawing-toolbar .note-tool:disabled { background:transparent; color:#999; }
-@media (max-width:899px) {
-  .notebook-page .notes-list-panel { flex-basis:32%; width:32%; min-width:160px; max-width:270px; }
-  .editor-heading { flex-wrap:wrap; padding:10px 12px; }
-  .editor-title { flex-basis:100%; }
-  .editor-meta { max-width:100%; width:100%; margin-left:0; }
-  .editor-meta time { width:auto; margin-left:8px; }
-  .index-actions { margin-left:0; }
-  .index-heading h2 { width:100%; }
-}
 
 /* One header row and the same quiet-select used in the app bars. */
-.notebook-page .editor-heading { flex-wrap:nowrap; }
-.notebook-page .editor-title { flex:1 1 auto; width:0; min-width:60px; }
-.notebook-page .editor-meta { flex:0 1 auto; width:auto; max-width:none; flex-wrap:nowrap; white-space:nowrap; margin-left:12px; }
-.notebook-page .editor-meta time { flex:none; width:auto; margin:0 0 0 12px; }
-.notebook-page .editor-meta .quiet-select-wrap { flex:0 1 auto; min-width:0; }
-.notebook-page .editor-meta .quiet-select-trigger { min-height:44px; height:44px; padding:0 8px; font-size:16px; }
+.notebook-page .editor-heading { flex-wrap:nowrap; padding:8px 16px; }
+.notebook-page .editor-title { flex:1 1 auto; width:0; min-width:65px; font-size:23px; }
+.notebook-page .editor-meta { flex:0 1 auto; min-width:0; padding:0; border:0; flex-wrap:nowrap; white-space:nowrap; margin-left:8px; }
+.notebook-page .editor-meta time { flex:none; margin-left:8px; font-size:14px; }
+.notebook-page .editor-meta select { width:auto; max-width:120px; margin:0; }
+.notebook-page .editor-meta .quiet-select-wrap { flex:0 1 auto; min-width:44px; max-width:160px; }
+.notebook-page .editor-meta .quiet-select-trigger { min-height:44px; height:44px; max-width:100%; padding:0 8px; font-size:16px; }
+#timestamp-short { display:none; }
 /* Text and transparent ink occupy the same sheet; tools only change input. */
 .notebook-page .editor-paper .writing-mode,
 .notebook-page .editor-paper .drawing-mode { position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; }
@@ -59,16 +50,12 @@
 .notebook-page #note-drawing, .notebook-page .editor-body { background:transparent; }
 .notebook-page .editor-body { min-height:0; }
 #empty-notebook { overflow:auto; max-height:100%; }
-@media (max-width:700px) {
- .notebook-page .editor-heading { flex-wrap:wrap; }
- .notebook-page .editor-title { flex-basis:100%; }
- .notebook-page .editor-meta { max-width:100%; margin-left:auto; }
- .notebook-page .editor-meta time { font-size:12px; margin-left:4px; }
-}
-body.little-narrow .notebook-page .notes-list-panel { flex:0 0 120px; width:120px; min-width:0; }
-body.little-narrow .notebook-page .editor-heading { flex-wrap:wrap; padding:6px 10px; }
-body.little-narrow .notebook-page .editor-title { flex-basis:100%; min-height:36px; }
-body.little-narrow .notebook-page .editor-meta { width:100%; margin-left:0; justify-content:flex-start; flex-wrap:wrap; white-space:normal; }
-body.little-narrow .notebook-page .editor-meta time { margin:0; font-size:12px; }
-body.little-narrow .index-heading { padding:6px; }
-body.little-narrow .index-action { padding:4px; font-size:15px; }
+
+body.little-narrow .notebook-page .editor-heading { padding:4px 8px; }
+body.little-narrow .notebook-page .editor-title { min-height:44px; font-size:19px; }
+body.little-narrow .notebook-page .editor-meta { margin-left:4px; }
+body.little-narrow .notebook-page .editor-meta time { margin-left:4px; font-size:12px; }
+body.little-narrow .notebook-page .editor-meta .quiet-select-trigger { padding:0 4px; font-size:14px; }
+body.little-narrow #timestamp-full, body.little-narrow .section-count { display:none; }
+body.little-narrow #timestamp-short { display:inline; }
+body.little-narrow .section-header .section-heading, body.little-narrow .notebook-item { padding-left:6px; padding-right:4px; }

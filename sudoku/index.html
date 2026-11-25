@@ -8,9 +8,9 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../productivity.css">
-  <link rel="stylesheet" href="styles.css?v=viewport-fit-3">
+  <link rel="stylesheet" href="styles.css?v=game-exit-1">
   <link rel="stylesheet" href="../controls.css">
-  <link rel="stylesheet" href="../still-apps.css?v=viewport-fit-3">
+  <link rel="stylesheet" href="../still-apps.css?v=game-exit-1">
   <link rel="stylesheet" href="../fullscreen.css?v=viewport-fit-3">
 </head>
 <body>
@@ -53,7 +53,7 @@
   </div>
   <div class="sudoku-result" id="result-overlay" style="display:none" aria-hidden="true">
     <div class="result-center">
-      <section class="result-dialog" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-describedby="result-copy">
+      <section class="result-dialog" role="dialog" aria-labelledby="result-title" aria-describedby="result-copy">
         <div class="result-stars" aria-hidden="true">
           <svg class="result-star" width="26" height="26" viewBox="0 0 24 24" focusable="false"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
           <svg class="result-star result-star-big" width="38" height="38" viewBox="0 0 24 24" focusable="false"><path d="m12 2 3 6.5 7 .8-5.2 4.9 1.4 7L12 17.7l-6.2 3.5 1.4-7L2 9.3l7-.8Z"/></svg>
@@ -62,7 +62,6 @@
         <h2 class="result-title" id="result-title">You did it!</h2>
         <p class="result-copy" id="result-copy">Every number in its place. Hooray!</p>
         <button class="result-action result-primary" id="result-new-puzzle" type="button"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg><span>Reset</span></button>
-        <a class="app-close" id="result-exit" href="../" aria-label="Exit Sudoku"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
       </section>
     </div>
   </div>
@@ -72,7 +71,6 @@
       <h2 id="help-title">How to play</h2>
       <p id="puzzle-rule">Use 1, 2, 3 and 4 once in each row, column and little box.</p>
       <ol><li>Tap an empty square, then choose a number below.</li><li>Each number belongs only once in each row, column and little box. The heavier edges mark the boxes.</li><li>The starting numbers stay fixed. Your numbers can be changed.</li></ol>
-      <p><strong>Easy:</strong> the next empty square is selected for you. Numbers that do not fit are greyed out.</p>
       <p>Made a mistake? Select your number and tap the eraser, or use Undo to reverse your last move.</p>
     </section>
   </div>
@@ -80,8 +78,8 @@
   <script src="../orientation.js?v=viewport-fit-3"></script>
   <script src="help.js"></script>
   <script src="engine.js"></script>
-  <script src="../game-flow.js"></script>
-  <script src="app.js?v=viewport-fit-3"></script>
+  <script src="../game-flow.js?v=game-exit-1"></script>
+  <script src="app.js?v=game-exit-1"></script>
   <script src="../dropdowns.js?v=viewport-fit-3"></script>
 </body>
 </html>

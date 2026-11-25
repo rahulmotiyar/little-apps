@@ -20,6 +20,8 @@
   var mode = 'write';
   var toolMessage = '';
   var formatter = null;
+  var sectionBeingRenamed = null;
+  var sectionFormAnchor = null;
   var page = document.querySelector('.notebook-page');
   var list = document.getElementById('notes-list');
   var newButton = document.getElementById('new-note');
@@ -28,10 +30,15 @@
   var sectionForm = document.getElementById('section-form');
   var sectionName = document.getElementById('section-name');
   var sectionError = document.getElementById('section-error');
+  var saveSectionButton = document.getElementById('add-section');
   var cancelSection = document.getElementById('cancel-section');
   var noteSection = document.getElementById('note-section');
   var noteTimestamp = document.getElementById('note-timestamp');
-  var showNotesButton = document.getElementById('show-notes');
+  var timestampFull = document.getElementById('timestamp-full');
+  var timestampShort = document.getElementById('timestamp-short');
+  var timestampLabel = document.getElementById('timestamp-label');
+  var toggleIndex = document.getElementById('toggle-index');
+  var indexPanel = document.getElementById('notebook-index');
   var exitLink = document.getElementById('exit');
   var titleInput = document.getElementById('editor-title');
   var bodyInput = document.getElementById('editor-body');
@@ -74,12 +81,19 @@
   function noteDate(note) { return note.updatedAt !== null ? note.updatedAt : note.createdAt !== null ? note.createdAt : note.indexedAt; }
   function dateLabel(note) { return (note.updatedAt === null && note.createdAt === null ? 'Indexed ' : '') + formatDate(noteDate(note)); }
   function updateTimestamp(note) {
-    if (!note) { setText(noteTimestamp, ''); noteTimestamp.removeAttribute('datetime'); return; }
-    var value = noteDate(note);
-    var prefix = note.updatedAt === null && note.createdAt === null ? 'Indexed ' : (note.createdAt !== null && (note.updatedAt === null || note.updatedAt === note.createdAt) ? 'Created ' : 'Updated ');
-    setText(noteTimestamp, prefix + formatDate(value));
-    noteTimestamp.setAttribute('title', formatter ? 'Europe/Amsterdam' : 'UTC');
-    if (value !== null) { noteTimestamp.setAttribute('datetime', new Date(value).toISOString()); }
+    var value = note && noteDate(note);
+    var date = note ? formatDate(value) : '';
+    var prefix = '';
+    if (note) {
+      if (note.createdAt === null && note.updatedAt === null) { prefix = 'Indexed '; }
+      else if (note.updatedAt === null || note.updatedAt === note.createdAt) { prefix = 'Created '; }
+      else { prefix = 'Updated '; }
+    }
+    setText(timestampFull, prefix + date);
+    setText(timestampShort, date.replace(/\s+\d{4},?\s+/, ' · ').replace(/ UTC$/, ''));
+    setText(timestampLabel, prefix + date);
+    noteTimestamp.setAttribute('title', prefix + date + (formatter && date ? ' (Europe/Amsterdam)' : ''));
+    if (typeof value === 'number') { noteTimestamp.setAttribute('datetime', new Date(value).toISOString()); }
     else { noteTimestamp.removeAttribute('datetime'); }
   }
   function showStorageError(text) { setText(storageStatus, text); storageStatus.style.display = 'block'; }
@@ -145,16 +159,11 @@
     updateSaveStatus();
     saveTimer = window.setTimeout(function () { saveTimer = null; saveNow(); }, 350);
   }
-  function noteTitle(note) { return note.title.replace(/^\s+|\s+$/g, '') || 'Untitled note'; }
-  function notePreview(note) {
-    var text = note.body.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
-    return text ? text.slice(0, 100) : (note.ink && note.ink.length ? 'Drawing' : 'Empty note');
-  }
+  function noteTitle(note) { return note.title.replace(/^\s+|\s+$/g, '') || 'Untitled'; }
   function updateListItem(note) {
     var item = note && itemNodes['note-' + note.id];
     if (!item) { return; }
     setText(item.title, noteTitle(note));
-    setText(item.preview, notePreview(note));
     setText(item.time, dateLabel(note));
     if (typeof noteDate(note) === 'number') { item.time.setAttribute('datetime', new Date(noteDate(note)).toISOString()); }
   }
@@ -190,16 +199,15 @@
         if (note.id === state.activeId) { button.setAttribute('aria-current', 'true'); }
         var title = document.createElement('span');
         title.className = 'notebook-item-title';
-        var preview = document.createElement('span');
-        preview.className = 'notebook-item-preview';
         var time = document.createElement('time');
         time.className = 'notebook-item-time';
-        button.appendChild(title); button.appendChild(preview); button.appendChild(time);
+        button.appendChild(title); button.appendChild(time);
         button.onclick = function () { openNote(this.getAttribute('data-note-id')); };
-        itemNodes['note-' + note.id] = { button: button, title: title, preview: preview, time: time };
+        itemNodes['note-' + note.id] = { button: button, title: title, time: time };
         updateListItem(note);
         sectionNotes.appendChild(button);
       }
+      if (!count && section.id === 'unfiled' && section.name === 'Notes') { continue; }
       var counter = document.createElement('span');
       counter.className = 'section-count';
       counter.textContent = String(count);
@@ -214,6 +222,13 @@
       more.setAttribute('aria-expanded', 'false');
       more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>';
       var menu = document.createElement('div'); menu.className = 'section-menu'; menu.hidden = true;
+      var rename = document.createElement('button'); rename.type = 'button';
+      rename.textContent = 'Rename section';
+      rename.onclick = (function (id, panel, button) { return function () {
+        panel.hidden = true;
+        button.setAttribute('aria-expanded', 'false');
+        showSectionForm(id, button);
+      }; }(section.id, menu, more));
       var deletion = document.createElement('button'); deletion.type = 'button';
       deletion.textContent = 'Delete section'; deletion.disabled = state.sections.length < 2;
       deletion.setAttribute('data-section-id', section.id);
@@ -225,7 +240,7 @@
       };
       var explanation = document.createElement('p');
       explanation.textContent = state.sections.length < 2 ? 'Keep at least one section.' : 'Notes move to the first remaining section.';
-      menu.appendChild(deletion); menu.appendChild(explanation);
+      menu.appendChild(rename); menu.appendChild(deletion); menu.appendChild(explanation);
       more.onclick = (function (panel, button) { return function () {
         var wasOpen = !panel.hidden;
         Array.prototype.forEach.call(list.querySelectorAll('.section-menu'), function (node) { node.hidden = true; });
@@ -234,12 +249,6 @@
       }; }(menu, more));
       sectionHeader.appendChild(more); sectionHeader.appendChild(menu);
       group.appendChild(sectionHeader);
-      if (!count) {
-        var placeholder = document.createElement('p');
-        placeholder.className = 'section-empty';
-        placeholder.textContent = 'No notes yet';
-        sectionNotes.appendChild(placeholder);
-      }
       group.appendChild(sectionNotes);
       list.appendChild(group);
       sectionNodes['section-' + section.id] = heading;
@@ -347,7 +356,6 @@
     model.select(state, id);
     if (needsMigration || before !== state.activeId || beforeSection !== state.activeSectionId) { dirty = true; }
     renderAll();
-    setClass('show-editor', true);
     applyMode('write');
     saveNow();
     focus(editor);
@@ -359,14 +367,28 @@
     if (!model.selectSection(state, id)) { return; }
     if (needsMigration || before !== state.activeId || beforeSection !== state.activeSectionId) { dirty = true; }
     renderAll();
-    setClass('show-editor', false);
     saveNow();
     focus(sectionNodes['section-' + id]);
   }
   function hideSectionForm() {
     sectionForm.hidden = true;
     sectionForm.style.display = 'none';
+    sectionBeingRenamed = null;
+    sectionFormAnchor = null;
     setText(sectionError, '');
+  }
+  function showSectionForm(id, anchor) {
+    flush();
+    var section = id && model.getSection(state, id);
+    sectionBeingRenamed = section ? section.id : null;
+    sectionFormAnchor = anchor;
+    sectionForm.hidden = false;
+    sectionForm.style.display = '';
+    sectionName.value = section ? section.name : '';
+    setText(saveSectionButton, section ? 'Rename' : 'Add');
+    setText(sectionError, '');
+    focus(sectionName);
+    if (section) { sectionName.select(); }
   }
   function switchTool(nextMode) {
     if (!selectedNote()) { return; }
@@ -380,63 +402,59 @@
     flush();
     var note = model.add(state);
     if (!note) {
-      if (selectedNote()) { setClass('show-editor', true); }
       setText(editorStatus, 'Notebook is full. Delete a note to add another (50 notes maximum).');
       return;
     }
     dirty = true;
     hideSectionForm(); renderAll();
-    setClass('show-editor', true);
     applyMode('write'); saveNow(); focus(titleInput);
   };
-  newSectionButton.onclick = function () {
-    flush();
-    setClass('show-editor', false);
-    sectionForm.hidden = false;
-    sectionForm.style.display = '';
-    sectionName.value = '';
-    setText(sectionError, '');
-    focus(sectionName);
-  };
+  newSectionButton.onclick = function () { showSectionForm(null, this); };
   sectionForm.onsubmit = function (event) {
     if (event) { event.preventDefault(); }
     flush();
     var name = sectionName.value.replace(/^\s+|\s+$/g, '');
     if (!name) { setText(sectionError, 'Give this section a name.'); focus(sectionName); return false; }
-    var section = model.addSection(state, name);
+    var section = sectionBeingRenamed ? model.renameSection(state, sectionBeingRenamed, name) : model.addSection(state, name);
     if (!section) { setText(sectionError, 'Try a different section name, up to 60 characters.'); focus(sectionName); return false; }
     dirty = true;
     hideSectionForm(); renderAll();
-    setClass('show-editor', false);
-    saveNow(); focus(sectionNodes['section-' + section.id]);
+    saveNow(); focus(sectionNodes['section-' + section.id] || newSectionButton);
     return false;
   };
-  cancelSection.onclick = function () { hideSectionForm(); focus(newSectionButton); };
+  cancelSection.onclick = function () {
+    var anchor = sectionFormAnchor;
+    hideSectionForm();
+    focus(anchor && indexPanel.contains(anchor) ? anchor : newSectionButton);
+  };
   noteSection.onchange = function () {
     flush();
     var note = selectedNote();
     if (note && model.move(state, note.id, this.value)) {
-      dirty = true; renderAll(); setClass('show-editor', true); saveNow();
+      dirty = true; renderAll(); saveNow();
     }
   };
-  showNotesButton.onclick = function () {
-    flush(); setClass('show-editor', false);
-    var item = itemNodes['note-' + state.activeId];
-    focus(item ? item.button : sectionNodes['section-' + state.activeSectionId] || newButton);
+  toggleIndex.onclick = function () {
+    flush();
+    indexPanel.hidden = !indexPanel.hidden;
+    var label = indexPanel.hidden ? 'Expand sidebar' : 'Collapse sidebar';
+    toggleIndex.setAttribute('aria-expanded', String(!indexPanel.hidden));
+    toggleIndex.setAttribute('aria-label', label);
+    toggleIndex.setAttribute('title', label);
+    if (ink) { ink.resize(); }
   };
   removeButton.onclick = function () {
     flush();
     var note = selectedNote();
     if (!note || !model.remove(state, note.id)) { return; }
     dirty = true; renderAll();
-    if (!selectedNote()) { setClass('show-editor', false); }
-    saveNow(); focus(editor.style.display !== 'none' ? editor : newButton);
+    saveNow(); focus(selectedNote() ? editor : indexPanel.hidden ? toggleIndex : newButton);
   };
   undoButton.onclick = function () {
     flush();
     var note = model.undoRemove(state);
     if (!note) { return; }
-    dirty = true; renderAll(); setClass('show-editor', true); saveNow(); focus(editor);
+    dirty = true; renderAll(); saveNow(); focus(editor);
   };
   writeButton.onclick = function () { switchTool('write'); };
   drawButton.onclick = function () { switchTool('draw'); };
@@ -468,7 +486,7 @@
   window.addEventListener('pageshow', function (event) {
     if (event.persisted && !dirty && !writeBlocked) {
       readSaved(); inkLoadedId = null; historyNoteId = null;
-      textHistory = []; renderAll(); setClass('show-editor', false);
+      textHistory = []; renderAll();
     }
   }, false);
 
@@ -486,5 +504,5 @@
     onNotice: setToolNotice
   });
   storageStatus.style.display = 'none';
-  readSaved(); hideSectionForm(); renderAll(); setClass('show-editor', false); saveNow();
+  readSaved(); hideSectionForm(); renderAll(); saveNow();
 }());

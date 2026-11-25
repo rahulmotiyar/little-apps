@@ -12,14 +12,12 @@
   var undoButton = document.getElementById('undo');
   var shell = document.getElementById('board-shell');
   var game = document.getElementById('game');
-  var page = document.getElementById('game-page');
   var newRoundButton = document.getElementById('new-round');
   var exitLink = document.getElementById('game-exit');
   var resultOverlay = document.getElementById('result-overlay');
   var resultTitle = document.getElementById('result-title');
   var resultCopy = document.getElementById('result-copy');
   var resultNewRound = document.getElementById('result-new-round');
-  var resultExit = document.getElementById('result-exit');
   var resultOpen = false;
   var focusBeforeResult = null;
   var previousWidth = 0;
@@ -48,9 +46,9 @@
     }
   }
 
-  function save() {
+  function save(moves) {
     try {
-      window.localStorage.setItem(storageKey, JSON.stringify({ moves: state.history }));
+      window.localStorage.setItem(storageKey, JSON.stringify({ moves: moves || state.history }));
     } catch (error) {
       storageUnavailable();
     }
@@ -74,9 +72,9 @@
     if (complete) {
       setText(resultTitle, state.winner ? state.winner + ' wins!' : 'A draw!');
       setText(resultCopy, state.winner ? 'Three in a row. Hooray!' : 'A new round starts shortly.');
+      resultOverlay.setAttribute('data-outcome', state.winner ? 'win' : 'draw');
       newRoundButton.disabled = true;
       undoButton.disabled = true;
-      exitLink.setAttribute('tabindex', '-1');
       resultOverlay.setAttribute('aria-hidden', 'false');
       resultOverlay.style.display = 'table';
       if (!resultOpen) {
@@ -85,13 +83,9 @@
         focus(resultNewRound);
         queueNextRound();
       }
-      if (document.activeElement !== resultNewRound && document.activeElement !== resultExit) { focus(resultNewRound); }
-      page.setAttribute('aria-hidden', 'true');
     } else {
       resultOverlay.style.display = 'none';
       resultOverlay.setAttribute('aria-hidden', 'true');
-      page.removeAttribute('aria-hidden');
-      exitLink.removeAttribute('tabindex');
       newRoundButton.disabled = false;
       if (resultOpen) {
         resultOpen = false;
@@ -167,30 +161,21 @@
   resultNewRound.onclick = function () {
     if (resultOpen) { startNewRound(); }
   };
-  function exitGame() {
-    flow.cancel();
-    engine.reset(state);
-    render();
-    save();
-  }
-  exitLink.onclick = exitGame;
-  resultExit.onclick = exitGame;
+  exitLink.onclick = function (event) {
+    if (flow.exit(event)) { save([]); }
+  };
   document.addEventListener('keydown', function (event) {
     if (!resultOpen) { return; }
     var key = event.key || event.keyCode;
     if (key === 'Tab' || key === 9) {
       event.preventDefault();
-      if (event.shiftKey) {
-        focus(document.activeElement === resultNewRound ? resultExit : resultNewRound);
-      } else {
-        focus(document.activeElement === resultExit ? resultNewRound : resultExit);
-      }
+      focus(document.activeElement === resultNewRound ? exitLink : resultNewRound);
     } else if (key === 'Escape' || key === 27) {
       event.preventDefault();
     }
   }, false);
   document.addEventListener('focusin', function (event) {
-    if (resultOpen && event.target !== resultNewRound && event.target !== resultExit) {
+    if (resultOpen && event.target !== resultNewRound && event.target !== exitLink) {
       focus(resultNewRound);
     }
   }, false);
@@ -198,7 +183,8 @@
   window.addEventListener('littleappsorientationchange', fitBoard, false);
   window.addEventListener('pageshow', function () {
     flow.cancel();
-    restore();
+    if (flow.resume()) { engine.reset(state); }
+    else { restore(); }
     render();
     fitBoard();
     if (resultOpen) { queueNextRound(); }

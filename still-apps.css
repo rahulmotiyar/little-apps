@@ -171,7 +171,7 @@ body[data-little-rotation="right"] { left:var(--little-screen-width); top:0; tra
 }
 .tool-header .tool-controls .app-exit-group, .game-header .game-actions .app-exit-group {
   position:absolute; top:0; right:0; display:flex; width:var(--app-action-width); height:52px;
-  margin:0; padding:0; border:0;
+  margin:0; padding:0; border:0; z-index:11;
 }
 .tool-header .app-exit-group .app-close, .game-header .app-exit-group .app-close {
   position:static; display:flex; align-items:center; justify-content:center;

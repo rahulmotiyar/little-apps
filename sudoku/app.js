@@ -9,8 +9,6 @@
   var numberKeys = [];
   var padColumns = 0;
   var resultOpen = false;
-  var exited = false;
-  var page = document.getElementById('sudoku-page');
   var puzzle = document.getElementById('puzzle');
   var body = document.getElementById('board-body');
   var shell = document.getElementById('board-shell');
@@ -25,13 +23,12 @@
   var rule = document.getElementById('puzzle-rule');
   var overlay = document.getElementById('result-overlay');
   var resultNew = document.getElementById('result-new-puzzle');
-  var resultExit = document.getElementById('result-exit');
 
   function focus(node) { if (node && typeof node.focus === 'function') { node.focus(); } }
 
   function queueNextPuzzle() {
     flow.schedule(function () {
-      if (resultOpen && state.complete && !exited) { newPuzzle(state.level); }
+      if (resultOpen && state.complete) { newPuzzle(state.level); }
     }, 2600);
   }
 
@@ -130,23 +127,24 @@
       difficulty.disabled = true;
       newButton.disabled = true;
       undoButton.disabled = true;
-      exitLink.setAttribute('tabindex', '-1');
       if (!resultOpen) { resultOpen = true; focus(resultNew); queueNextPuzzle(); }
-      page.setAttribute('aria-hidden', 'true');
     } else {
       var wasOpen = resultOpen;
       resultOpen = false;
       overlay.style.display = 'none';
       overlay.setAttribute('aria-hidden', 'true');
-      page.removeAttribute('aria-hidden');
-      exitLink.removeAttribute('tabindex');
       difficulty.disabled = false;
       newButton.disabled = false;
-      if (wasOpen) { focus(cells[selected]); }
+      if (wasOpen) { focus(cells[selected >= 0 ? selected : firstEditable()]); }
     }
   }
 
-  function render(message) {
+  function firstEditable() {
+    return state.givens.indexOf(0);
+  }
+
+  function render(message, rejected) {
+    var tabStop = selected >= 0 ? selected : firstEditable();
     for (var i = 0; i < cells.length; i += 1) {
       var fixed = Boolean(state.givens[i]);
       var value = state.board[i];
@@ -155,10 +153,11 @@
       cells[i].disabled = fixed || state.complete;
       cells[i].setAttribute('aria-pressed', selected === i ? 'true' : 'false');
       cells[i].setAttribute('aria-label', 'Row ' + (Math.floor(i / state.size) + 1) + ', column ' + (i % state.size + 1) + ', ' + (value || 'empty') + (fixed ? ', fixed number' : ''));
-      cells[i].setAttribute('tabindex', selected === i ? '0' : '-1');
+      cells[i].setAttribute('tabindex', tabStop === i ? '0' : '-1');
     }
     for (var number = 0; number < numberKeys.length; number += 1) {
-      numberKeys[number].disabled = selected < 0 || state.complete || (state.level === 'easy' && engine.conflicts(state, selected, number + 1));
+      numberKeys[number].disabled = selected < 0 || state.complete;
+      numberKeys[number].className = 'number-key' + (number + 1 === rejected ? ' rejected' : '');
     }
     clearButton.disabled = selected < 0 || !state.board[selected] || state.complete;
     undoButton.disabled = !state.history.length;
@@ -166,9 +165,6 @@
       status.textContent = message;
     } else if (state.complete) {
       status.textContent = '';
-    } else if (state.level === 'easy' && selected >= 0 && !state.board[selected]) {
-      var choices = candidates(selected);
-      status.textContent = choices.length ? 'Which number fits the dark square?' : 'Try Undo, then another number.';
     } else {
       status.textContent = 'Tap a square, then a number.';
     }
@@ -178,8 +174,17 @@
   function place(value) {
     if (resultOpen || selected < 0) { return; }
     var result = engine.place(state, selected, value);
-    if (!result.accepted) { render(result.conflict ? 'Try another number.' : undefined); return; }
-    if (state.level === 'easy' && value && !state.complete) { selected = nextEmpty(); }
+    if (!result.accepted) {
+      if (result.conflict) { render('Try another number.', value); }
+      return;
+    }
+    if (state.level === 'easy' && value) {
+      var played = selected;
+      selected = -1;
+      render();
+      if (!state.complete) { focus(cells[played]); }
+      return;
+    }
     render();
   }
 
@@ -210,19 +215,13 @@
   function newPuzzle(level) {
     flow.cancel();
     state = engine.createGame(level);
-    selected = nextEmpty();
+    selected = state.level === 'easy' ? -1 : nextEmpty();
     difficulty.value = state.level;
     rule.textContent = state.size === 4 ? 'Use 1, 2, 3 and 4 once in each row, column and little box.' : 'Use 1–' + state.size + ' once in each row, column and box.';
     buildBoard();
     buildPad();
     render();
     fitBoard();
-  }
-
-  function exitGame() {
-    flow.cancel();
-    exited = true;
-    newPuzzle('easy');
   }
 
   newButton.onclick = function () { if (!resultOpen) { newPuzzle(state.level); } };
@@ -238,14 +237,13 @@
       render('Last number undone.');
     }
   };
-  exitLink.onclick = exitGame;
-  resultExit.onclick = exitGame;
+  exitLink.onclick = flow.exit;
   document.addEventListener('keydown', function (event) {
     var key = event.key || event.keyCode;
     if (resultOpen) {
       if (key === 'Tab' || key === 9) {
         event.preventDefault();
-        focus(document.activeElement === resultNew ? resultExit : resultNew);
+        focus(document.activeElement === resultNew ? exitLink : resultNew);
       } else if (key === 'Escape' || key === 27) { event.preventDefault(); }
       return;
     }
@@ -268,12 +266,12 @@
     }
   }, false);
   document.addEventListener('focusin', function (event) {
-    if (resultOpen && event.target !== resultNew && event.target !== resultExit) { focus(resultNew); }
+    if (resultOpen && event.target !== resultNew && event.target !== exitLink) { focus(resultNew); }
   }, false);
   window.addEventListener('resize', fitBoard, false);
   window.addEventListener('littleappsorientationchange', fitBoard, false);
   window.addEventListener('pageshow', function () {
-    if (exited) { exited = false; newPuzzle('easy'); } else {
+    if (flow.resume()) { newPuzzle('easy'); } else {
       fitBoard();
       if (resultOpen && state.complete) { queueNextPuzzle(); }
     }

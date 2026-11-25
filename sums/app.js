@@ -8,7 +8,6 @@
   var displayedIndex = 0;
   var waitingNext = false;
   var resultOpen = false;
-  var exited = false;
   var hintOpen = false;
   var page = document.getElementById('sums-page');
   var level = document.getElementById('level');
@@ -245,11 +244,6 @@
     focus(choices[0]);
   }
 
-  function exitGame() {
-    exited = true;
-    startRound('3', 'add');
-  }
-
   for (var i = 0; i < 4; i += 1) {
     var choice = document.getElementById('choice-' + i);
     choice.setAttribute('data-choice', String(i));
@@ -269,8 +263,8 @@
   resultNew.onclick = function () { if (resultOpen) { resetSameSettings(); } };
   level.onchange = function () { if (!resultOpen) { startRound(this.value, mode.value); } };
   mode.onchange = function () { if (!resultOpen) { startRound(level.value, this.value); } };
-  exit.onclick = exitGame;
-  resultExit.onclick = exitGame;
+  exit.onclick = flow.exit;
+  resultExit.onclick = flow.exit;
 
   document.addEventListener('keydown', function (event) {
     var key = event.key || event.keyCode;
@@ -294,7 +288,7 @@
     if (resultOpen && event.target !== resultNew && event.target !== resultExit) { focus(resultNew); }
   }, false);
   window.addEventListener('pageshow', function () {
-    if (exited) { exited = false; startRound('3', 'add'); }
+    if (flow.resume()) { startRound('3', 'add'); }
     else if (resultOpen) { flow.schedule(resetSameSettings, 2600); }
     else if (waitingNext) { flow.schedule(nextQuestion, 1000); }
   }, false);

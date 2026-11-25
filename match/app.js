@@ -5,7 +5,6 @@
   var flow = window.LittleGameFlow.create();
   var state;
   var resultOpen = false;
-  var exited = false;
   var page = document.getElementById('match-page');
   var group = document.getElementById('group');
   var topic = document.getElementById('topic');
@@ -221,18 +220,13 @@
     if (result.complete) { openResult(); }
   }
 
-  function exitGame() {
-    exited = true;
-    startRound('3', 'numbers');
-  }
-
   for (var i = 0; i < 4; i += 1) { stars.push(document.getElementById('star-' + i)); }
   group.onchange = function () { if (!resultOpen) { startRound(this.value, topic.value); } };
   topic.onchange = function () { if (!resultOpen) { startRound(group.value, this.value); } };
   newRound.onclick = function () { if (!resultOpen) { startRound(state.group, state.topic); } };
   resultNew.onclick = function () { if (resultOpen) { startRound(state.group, state.topic); focus(buttons.left[0]); } };
-  exit.onclick = exitGame;
-  resultExit.onclick = exitGame;
+  exit.onclick = flow.exit;
+  resultExit.onclick = flow.exit;
   document.addEventListener('keydown', function (event) {
     if (!resultOpen) { return; }
     var key = event.key || event.keyCode;
@@ -245,7 +239,7 @@
     if (resultOpen && event.target !== resultNew && event.target !== resultExit) { focus(resultNew); }
   }, false);
   window.addEventListener('pageshow', function () {
-    if (exited) { exited = false; startRound('3', 'numbers'); }
+    if (flow.resume()) { startRound('3', 'numbers'); }
     else if (resultOpen) { scheduleResult(); }
   }, false);
   startRound('3', 'numbers');
