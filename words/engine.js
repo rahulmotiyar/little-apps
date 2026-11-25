@@ -1,11 +1,11 @@
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
+    module.exports = factory(require('./content.js'));
   } else {
-    root.KindleWords = factory();
+    root.KindleWords = factory(root.KindleWordsContent);
   }
-}(this, function () {
+}(this, function (content) {
   'use strict';
 
   // Original practice material; these groupings do not cover a full curriculum.
@@ -98,26 +98,38 @@
     return copy;
   }
 
-  function createRound(group, activity, rng) {
+  function normalizeLanguage(language) {
+    return typeof language === 'string' && Object.prototype.hasOwnProperty.call(content.copy, language) ? language : 'nl';
+  }
+
+  function getCopy(language) {
+    return content.copy[normalizeLanguage(language)];
+  }
+
+  function createRound(group, activity, rng, language) {
     var selectedGroup = group === '4' || group === '5' ? group : '3';
     var selectedActivity = activity === 'spell' ? 'spell' : 'read';
+    var selectedLanguage = normalizeLanguage(language);
     var source;
     var items;
     var questions = [];
     var i;
     var item;
     rng = typeof rng === 'function' ? rng : Math.random;
-    source = banks[selectedGroup][selectedActivity];
+    source = (selectedLanguage === 'nl' ? banks : content.banks[selectedLanguage])[selectedGroup][selectedActivity];
     items = shuffle(source, rng).slice(0, 5);
     for (i = 0; i < items.length; i += 1) {
       item = items[i];
+      var id = item.id || [selectedLanguage, selectedGroup, selectedActivity, source.indexOf(item)].join('-');
       if (selectedActivity === 'read') {
-        questions.push({ id: item.id, title: item.title, story: item.story, question: item.question, choices: shuffle(item.choices, rng), answer: item.answer });
+        questions.push({ id:id, title:item.title, story:item.story, question:item.question, choices:shuffle(item.choices, rng), answer:item.answer });
       } else {
-        questions.push({ id: item.id, clue: item.clue, word: item.word, letters: shuffle(item.word.split(''), rng) });
+        var tiles = item.tiles || item.word.split('');
+        var picture = item.picture || (selectedLanguage === 'nl' && selectedGroup === '3' ? item.word : null);
+        questions.push({ id:id, clue:item.clue, word:item.word, picture:picture, letters:shuffle(tiles, rng) });
       }
     }
-    return { group: selectedGroup, activity: selectedActivity, index: 0, total: 5, questions: questions, complete: false };
+    return { group:selectedGroup, activity:selectedActivity, language:selectedLanguage, index:0, total:items.length, questions:questions, complete:false };
   }
 
   function question(state) {
@@ -135,7 +147,8 @@
     if (state.activity === 'spell') {
       normalized = value.replace(/^\s+|\s+$/g, '').toLowerCase();
       if (!normalized) { return { accepted: false, correct: false, complete: false }; }
-      correct = normalized === current.word;
+      var word = current.word.toLowerCase();
+      correct = typeof normalized.normalize === 'function' ? normalized.normalize() === word.normalize() : normalized === word;
     } else {
       if (current.choices.indexOf(value) === -1) { return { accepted: false, correct: false, complete: false }; }
       correct = value === current.answer;
@@ -147,5 +160,5 @@
     return { accepted: true, correct: correct, complete: state.complete };
   }
 
-  return { createRound: createRound, question: question, answer: answer };
+  return { createRound:createRound, getCopy:getCopy, question:question, answer:answer };
 }));

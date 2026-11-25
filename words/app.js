@@ -2,8 +2,9 @@
   'use strict';
 
   var engine = window.KindleWords;
+  var preference = window.LittleAppsLanguage;
   var flow = window.LittleGameFlow.create();
-  var state;
+  var state, copy;
   var displayed = null;
   var displayedIndex = 0;
   var waitingNext = false;
@@ -14,6 +15,7 @@
   var slots = [];
   var stars = [];
   var page = document.getElementById('words-page');
+  var main = document.getElementById('words-main');
   var group = document.getElementById('group');
   var activity = document.getElementById('activity');
   var newRound = document.getElementById('new-round');
@@ -26,17 +28,22 @@
   var readQuestion = document.getElementById('read-question');
   var readChoices = document.getElementById('read-choices');
   var spellPanel = document.getElementById('spell-panel');
+  var spellPrompt = document.getElementById('spell-prompt');
+  var bankInstruction = document.getElementById('bank-instruction');
   var spellPicture = document.getElementById('spell-picture');
   var spellClue = document.getElementById('spell-clue');
   var wordSlots = document.getElementById('word-slots');
   var letterBank = document.getElementById('letter-bank');
   var undoLetter = document.getElementById('undo-letter');
+  var undoLabel = document.getElementById('undo-letter-label');
   var checkWord = document.getElementById('check-word');
+  var checkLabel = document.getElementById('check-word-label');
   var feedback = document.getElementById('feedback');
   var overlay = document.getElementById('result-overlay');
   var resultTitle = document.getElementById('result-title');
   var resultCopy = document.getElementById('result-copy');
   var resultNew = document.getElementById('result-new-round');
+  var resultNewLabel = document.getElementById('result-new-label');
   var resultExit = document.getElementById('result-exit');
 
   function text(node, value) {
@@ -64,10 +71,32 @@
     while (node.firstChild) { node.removeChild(node.firstChild); }
   }
 
+  function selectedLanguage() { return preference ? preference.read() : 'nl'; }
+
+  function label(key, values) {
+    return copy[key].replace(/\{(\w+)\}/g, function (_, name) { return values[name]; });
+  }
+
+  function updateLanguage() {
+    copy = engine.getCopy(state.language);
+    main.setAttribute('lang', state.language);
+    overlay.setAttribute('lang', state.language);
+    readPanel.setAttribute('aria-label', copy.reading);
+    spellPanel.setAttribute('aria-label', copy.spelling);
+    letterBank.setAttribute('aria-label', copy.tiles);
+    text(activity.options[0], copy.reading);
+    text(activity.options[1], copy.spelling);
+    text(spellPrompt, copy.clue);
+    text(bankInstruction, copy.order);
+    text(undoLabel, copy.undo);
+    text(checkLabel, copy.check);
+    text(resultNewLabel, copy.reset);
+  }
+
   function updateStars() {
     for (var i = 0; i < stars.length; i += 1) { flag(stars[i], 'earned', i < state.index); }
-    starsContainer.setAttribute('aria-label', state.index + ' van ' + state.total + ' sterren');
-    text(progress, (state.activity === 'spell' ? 'Woord ' : 'Vraag ') + Math.min(displayedIndex + 1, state.total) + ' van ' + state.total);
+    starsContainer.setAttribute('aria-label', label('stars', { number:state.index, total:state.total }));
+    text(progress, label(state.activity === 'spell' ? 'spellProgress' : 'readProgress', { number:Math.min(displayedIndex + 1, state.total), total:state.total }));
   }
 
   function hideResult() {
@@ -83,8 +112,8 @@
 
   function openResult() {
     resultOpen = true;
-    text(resultTitle, 'Hoera!');
-    text(resultCopy, 'Vijf sterren. Goed gedaan!');
+    text(resultTitle, copy.result);
+    text(resultCopy, copy.resultCopy);
     show(overlay, true, 'table');
     overlay.setAttribute('aria-hidden', 'false');
     group.disabled = true;
@@ -116,15 +145,15 @@
     for (var k = 0; k < slots.length; k += 1) {
       var letter = k < selectedLetters.length ? displayed.letters[selectedLetters[k]] : '';
       text(slots[k], letter || '\u00a0');
-      slots[k].setAttribute('aria-label', 'Letter ' + (k + 1) + ': ' + (letter || 'leeg'));
+      slots[k].setAttribute('aria-label', label('slot', { number:k + 1, value:letter || copy.empty }));
     }
-    wordSlots.setAttribute('aria-label', 'Jouw woord: ' + (selectedLetters.length ? selectedWord() : 'nog leeg'));
+    wordSlots.setAttribute('aria-label', label('word', { value:selectedLetters.length ? selectedWord() : copy.empty }));
     undoLetter.disabled = waitingNext || resultOpen || !selectedLetters.length;
-    checkWord.disabled = waitingNext || resultOpen || selectedLetters.length !== displayed.word.length;
+    checkWord.disabled = waitingNext || resultOpen || selectedLetters.length !== slots.length;
   }
 
   function chooseLetter(index) {
-    if (resultOpen || waitingNext || state.activity !== 'spell' || !letterButtons[index] || letterButtons[index].disabled || selectedLetters.length >= displayed.word.length) { return; }
+    if (resultOpen || waitingNext || state.activity !== 'spell' || !letterButtons[index] || letterButtons[index].disabled || selectedLetters.length >= slots.length) { return; }
     selectedLetters.push(index);
     text(feedback, '');
     updateSpelling();
@@ -151,7 +180,7 @@
     if (!result.correct) {
       readingButtons[index].disabled = true;
       flag(readingButtons[index], 'tried', true);
-      text(feedback, 'Nog niet. Probeer een ander antwoord.');
+      text(feedback, copy.readRetry);
       return;
     }
     flag(readingButtons[index], 'correct', true);
@@ -181,11 +210,11 @@
 
   function renderSpelling() {
     text(spellClue, displayed.clue);
-    if (String(state.group) === '3') {
-      spellPicture.setAttribute('src', 'pictures/' + displayed.word + '.svg');
+    if (displayed.picture) {
+      spellPicture.setAttribute('src', 'pictures/' + displayed.picture + '.svg');
       show(spellPicture, true);
     }
-    for (var i = 0; i < displayed.word.length; i += 1) {
+    for (var i = 0; i < displayed.letters.length; i += 1) {
       var slot = document.createElement('span');
       slot.className = 'word-slot';
       slots.push(slot);
@@ -196,7 +225,7 @@
       button.type = 'button';
       button.className = 'letter-button';
       button.setAttribute('data-letter', String(j));
-      button.setAttribute('aria-label', 'Letter ' + displayed.letters[j]);
+      button.setAttribute('aria-label', label('tile', { value:displayed.letters[j] }));
       text(button, displayed.letters[j]);
       button.onclick = function () { chooseLetter(Number(this.getAttribute('data-letter'))); };
       letterButtons.push(button);
@@ -230,7 +259,8 @@
   function startRound(nextGroup, nextActivity) {
     flow.cancel();
     hideResult();
-    state = engine.createRound(nextGroup, nextActivity);
+    state = engine.createRound(nextGroup, nextActivity, null, selectedLanguage());
+    updateLanguage();
     group.value = String(state.group);
     activity.value = state.activity;
     renderQuestion();
@@ -250,11 +280,11 @@
     updateSpelling();
   };
   checkWord.onclick = function () {
-    if (resultOpen || waitingNext || state.activity !== 'spell' || checkWord.disabled || selectedLetters.length !== displayed.word.length) { return; }
+    if (resultOpen || waitingNext || state.activity !== 'spell' || checkWord.disabled || selectedLetters.length !== slots.length) { return; }
     var result = engine.answer(state, selectedWord());
     if (!result.accepted) { return; }
     if (!result.correct) {
-      text(feedback, 'Kijk nog eens naar de letters. Je kunt terug.');
+      text(feedback, copy.spellRetry);
       return;
     }
     correctAnswer(result);
@@ -280,8 +310,14 @@
   }, false);
   window.addEventListener('pageshow', function () {
     if (flow.resume()) { startRound('3', 'read'); }
+    else if (state.language !== selectedLanguage()) { startRound(state.group, state.activity); }
     else if (resultOpen) { scheduleResult(); }
     else if (waitingNext) { flow.schedule(nextQuestion, 1000); }
   }, false);
+  window.addEventListener('storage', function (event) {
+    if (preference && (event.key === preference.key || event.key === null) && state.language !== selectedLanguage()) {
+      startRound(state.group, state.activity);
+    }
+  });
   startRound('3', 'read');
 }());

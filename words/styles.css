@@ -84,3 +84,5 @@ body.little-compact .feedback { min-height:18px; margin:2px 0 0; font-size:15px;
 body.little-landscape.little-compact .learning-panel { display:flex; align-items:flex-start; }
 body.little-landscape.little-compact .reading-text, body.little-landscape.little-compact .spell-riddle { flex:1; min-width:0; padding-right:16px; }
 body.little-landscape.little-compact .reading-task, body.little-landscape.little-compact .spell-build { flex:1; min-width:0; }
+.words-main[lang="hi"] .word-slot { width:1.9em; line-height:1.35; }
+.words-main[lang="hi"] .letter-button { line-height:1.35; }
