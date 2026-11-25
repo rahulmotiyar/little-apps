@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Settings</title>
+  <title data-lang-text="settings">Settings</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../productivity.css">
@@ -16,9 +16,9 @@
 <body>
   <div class="tool-page settings-page">
     <header class="tool-header">
-      <h1 class="tool-title">Settings</h1>
+      <h1 class="tool-title" data-lang-text="settings">Settings</h1>
       <div class="tool-controls">
-        <span class="app-exit-group"><a class="close-app app-close" href="../" aria-label="Exit Settings"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+        <span class="app-exit-group"><a class="close-app app-close" href="../" aria-label="Exit Settings" data-lang-label="exit"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
       </div>
 <button type="button" id="web-fullscreen" class="web-fullscreen-button" aria-label="Enter fullscreen" title="Enter fullscreen" hidden>
   <svg class="fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg>
@@ -27,31 +27,47 @@
 <div id="web-fullscreen-message" class="web-fullscreen-message" role="status"></div>
     </header>
     <main class="settings-workspace">
-      <nav class="settings-navigation" aria-label="Settings sections">
-        <p class="settings-group">General</p>
-        <a class="settings-tab" href="#display" id="display-tab" aria-current="page">Display</a>
+      <nav class="settings-navigation" aria-label="Settings sections" data-lang-label="sections">
+        <p class="settings-group" data-lang-text="general">General</p>
+        <a class="settings-tab" href="#display" id="display-tab" aria-current="page" data-lang-text="display">Display</a>
+        <a class="settings-tab" href="#language" id="language-tab" data-lang-text="language">Language</a>
       </nav>
       <section class="settings-main" id="display" aria-labelledby="display-title">
-        <h2 class="settings-title" id="display-title">Display</h2>
+        <h2 class="settings-title" id="display-title" data-lang-text="display">Display</h2>
         <div class="settings-panel">
           <fieldset class="orientation-options">
-            <legend>Orientation</legend>
-            <label class="settings-option"><input type="radio" name="orientation" value="portrait"><span>Portrait</span></label>
-            <label class="settings-option"><input type="radio" name="orientation" value="landscape"><span>Landscape</span></label>
+            <legend data-lang-text="orientation">Orientation</legend>
+            <label class="settings-option"><input type="radio" name="orientation" value="portrait"><span data-lang-text="portrait">Portrait</span></label>
+            <label class="settings-option"><input type="radio" name="orientation" value="landscape"><span data-lang-text="landscape">Landscape</span></label>
           </fieldset>
           <fieldset class="display-options">
-            <legend>Launcher</legend>
-            <label class="settings-option"><input type="checkbox" id="show-widgets" checked><span>Show widgets on launcher</span></label>
+            <legend data-lang-text="launcher">Launcher</legend>
+            <label class="settings-option"><input type="checkbox" id="show-widgets" checked><span data-lang-text="widgets">Show widgets on launcher</span></label>
           </fieldset>
-          <p id="storage-warning" class="settings-warning" role="status" hidden>Couldn’t save this setting on this device.</p>
+          <p id="storage-warning" class="settings-warning" role="status" data-lang-text="saveError" hidden>Couldn’t save this setting on this device.</p>
           <p id="orientation-message" class="settings-warning" role="status" hidden></p>
+        </div>
+      </section>
+      <section class="settings-main" id="language" aria-labelledby="language-title" hidden>
+        <h2 class="settings-title" id="language-title" data-lang-text="language">Language</h2>
+        <div class="settings-panel">
+          <fieldset class="orientation-options">
+            <legend data-lang-text="appLanguage">App language</legend>
+            <label class="settings-option" lang="nl"><input type="radio" name="app-language" value="nl"><span>Nederlands</span></label>
+            <label class="settings-option" lang="en"><input type="radio" name="app-language" value="en" checked><span>English</span></label>
+            <label class="settings-option" lang="de"><input type="radio" name="app-language" value="de"><span>Deutsch</span></label>
+            <label class="settings-option" lang="hi"><input type="radio" name="app-language" value="hi"><span>हिन्दी</span></label>
+            <label class="settings-option" lang="zh-Hans"><input type="radio" name="app-language" value="zh-Hans"><span>简体中文</span></label>
+          </fieldset>
+          <p id="language-warning" class="settings-warning" role="status" data-lang-text="saveError" hidden>Couldn’t save this setting on this device.</p>
         </div>
       </section>
     </main>
   </div>
   <script src="../fullscreen.js?v=1"></script>
+  <script src="../language.js?v=1"></script>
   <script src="../orientation.js?v=viewport-fit-3"></script>
-  <script src="settings.js?v=20261121-display-options"></script>
+  <script src="settings.js?v=language-1"></script>
   <script src="display.js?v=20261121-display-options"></script>
 </body>
 </html>

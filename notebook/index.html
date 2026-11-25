@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Notebook</title>
+  <title data-lang-text="notebook">Notebook</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../productivity.css">
@@ -20,13 +20,13 @@
     <header class="tool-header notebook-header">
       <div class="notebook-heading">
         <button class="index-action" id="toggle-index" type="button" aria-label="Collapse sidebar" aria-controls="notebook-index" aria-expanded="true" title="Collapse sidebar"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v14"/></svg></button>
-        <h1 class="tool-title">Notebook</h1>
+        <h1 class="tool-title" data-lang-text="notebook">Notebook</h1>
       </div>
       <div class="tool-controls">
         <div class="tool-actions">
           <button class="tool-button icon-undo" id="undo-remove" type="button" aria-label="Undo remove" title="Undo remove" style="display:none">Undo remove</button>
         </div>
-        <span class="notebook-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Notebook"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+        <span class="notebook-exit app-exit-group"><a class="close-app app-close" id="exit" href="../" aria-label="Exit Notebook" data-lang-label="exit"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
       </div>
 <button type="button" id="web-fullscreen" class="web-fullscreen-button" aria-label="Enter fullscreen" title="Enter fullscreen" hidden>
   <svg class="fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg>
@@ -87,7 +87,7 @@
               <button class="tool-button note-tool" id="draw-tool" type="button" aria-label="Draw" title="Draw" aria-pressed="false"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 15 16 3l5 5L9 20l-6 1 1-6ZM13 6l5 5"/></svg><span>Draw</span></button>
               <button class="tool-button note-tool" id="erase-tool" type="button" aria-label="Erase" title="Erase" aria-pressed="false"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 13 9-10 9 8-9 10H9l-5-4v-4ZM8 9l9 8M13 21h9"/></svg><span>Erase</span></button>
               <span class="drawing-tool-divider drawing-actions-start" aria-hidden="true"></span>
-              <button class="tool-button note-tool" id="undo-tool" type="button" aria-label="Undo" title="Undo" disabled><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg><span>Undo</span></button>
+              <button class="tool-button note-tool" id="undo-tool" type="button" aria-label="Undo" data-lang-label="undo" title="Undo" data-lang-title="undo" disabled><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg><span>Undo</span></button>
               <button class="tool-button note-tool" id="remove-note" type="button" aria-label="Delete note" title="Delete note"><svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg><span>Delete</span></button>
             </aside>
           </div>
@@ -98,6 +98,7 @@
     <noscript><p>Enable JavaScript in your browser to write notes.</p></noscript>
   </div>
   <script src="../fullscreen.js?v=1"></script>
+  <script src="../language.js?v=1"></script>
   <script src="../orientation.js?v=viewport-fit-3"></script>
   <script src="state.js?v=notebook-index-1"></script>
   <script src="ink.js?v=20261121-manual-rotation-v2"></script>

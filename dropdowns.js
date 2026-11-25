@@ -14,7 +14,10 @@
     views.forEach(function (view) {
       var selected = view.source.options[view.source.selectedIndex];
       var shortLabel = selected && document.body.classList.contains('little-narrow') && selected.getAttribute('data-short');
-      view.text.textContent = shortLabel || (selected ? selected.textContent : '');
+      var value = shortLabel || (selected ? selected.textContent : '');
+      var label = view.source.getAttribute('aria-label');
+      if (view.text.textContent !== value) { view.text.textContent = value; }
+      if (view.trigger.getAttribute('aria-label') !== label) { view.trigger.setAttribute('aria-label', label); }
       view.trigger.disabled = view.source.disabled;
       if (opened && opened.view === view && view.source.disabled) { close(false); }
     });
@@ -73,7 +76,7 @@
     trigger.onclick = function () { open(view); };
     trigger.onkeydown = function (event) { event.stopPropagation(); if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); open(view); } };
     source.addEventListener('change', sync);
-    new MutationObserver(sync).observe(source, { attributes: true, attributeFilter: ['disabled'], childList:true, subtree:true });
+    new MutationObserver(sync).observe(source, { attributes: true, attributeFilter: ['disabled', 'aria-label'], childList:true, subtree:true });
   });
   if (views.length) {
     window.LittleAppsMenus.onOutsidePress(function () { return opened; }, function () { close(false); });

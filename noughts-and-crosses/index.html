@@ -25,9 +25,9 @@
       </div>
       <div class="game-tools">
         <div class="game-actions">
-          <button class="tool-button" id="undo" type="button" aria-label="Undo" title="Undo" disabled><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg><span class="button-label">Undo</span></button>
-          <button class="tool-button" id="new-round" type="button" aria-label="Reset TicTacToe" title="Reset"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg></button>
-          <span class="exit-separator app-exit-group"><a class="close-app app-close" id="game-exit" href="../" aria-label="Exit TicTacToe"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
+          <button class="tool-button" id="undo" type="button" aria-label="Undo" data-lang-label="undo" title="Undo" data-lang-title="undo" disabled><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6 4 11l5 5M4 11h9a6 6 0 0 1 6 6"/></svg><span class="button-label">Undo</span></button>
+          <button class="tool-button" id="new-round" type="button" aria-label="Reset TicTacToe" data-lang-label="reset" title="Reset" data-lang-title="reset"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 8a7.5 7.5 0 1 0 1 4M19 4v4h-4"/></svg></button>
+          <span class="exit-separator app-exit-group"><a class="close-app app-close" id="game-exit" href="../" aria-label="Exit TicTacToe" data-lang-label="exit"><svg class="button-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></a></span>
         </div>
       </div>
 <button type="button" id="web-fullscreen" class="web-fullscreen-button" aria-label="Enter fullscreen" title="Enter fullscreen" hidden>
@@ -72,6 +72,7 @@
     </div>
   </div>
   <script src="../fullscreen.js?v=1"></script>
+  <script src="../language.js?v=1"></script>
   <script src="../orientation.js?v=viewport-fit-3"></script>
   <script src="game.js"></script>
   <script src="../game-flow.js?v=game-exit-1"></script>
