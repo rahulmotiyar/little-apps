@@ -115,7 +115,10 @@
     button.setAttribute('aria-pressed', 'false');
     var content = document.createElement('span');
     content.className = 'card-content';
-    if (card.kind === 'clock') { content.appendChild(clock(card)); }
+    if (card.kind === 'clock') {
+      content.className += ' card-clock-content';
+      content.appendChild(clock(card));
+    }
     else if (card.kind === 'dots') { content.appendChild(dots(card)); }
     else {
       var label = document.createElement('span');

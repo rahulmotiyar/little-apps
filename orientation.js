@@ -8,9 +8,19 @@
       return value === 'portrait' || value === 'landscape' ? value : 'auto';
     } catch (error) { return 'auto'; }
   }
-  function dimensions() {
+  function viewport() {
     var w = window.innerWidth || document.documentElement.clientWidth;
     var h = window.innerHeight || document.documentElement.clientHeight;
+    var visible = window.visualViewport;
+    if (visible && visible.scale === 1 && visible.width > 0 && visible.height > 0) {
+      w = Math.min(w, visible.width);
+      h = Math.min(h, visible.height);
+    }
+    return { width:Math.floor(w), height:Math.floor(h) };
+  }
+  function dimensions(screen) {
+    screen = screen || viewport();
+    var w = screen.width, h = screen.height;
     return { physicalWidth:w, physicalHeight:h, width:rotation === 'none' ? w : h, height:rotation === 'none' ? h : w };
   }
   function rect(element) {
@@ -31,11 +41,13 @@
     window.dispatchEvent(event);
   }
   function update(announce) {
-    var w = window.innerWidth || document.documentElement.clientWidth;
-    var h = window.innerHeight || document.documentElement.clientHeight;
+    var screen = viewport(), w = screen.width, h = screen.height;
     rotation = current === 'landscape' && h > w ? 'left' : current === 'portrait' && w > h ? 'right' : 'none';
-    var size = dimensions(), root = document.documentElement;
+    var size = dimensions(screen), root = document.documentElement;
     document.body.setAttribute('data-little-rotation', rotation);
+    document.body.classList.toggle('little-narrow', size.width <= 420);
+    document.body.classList.toggle('little-compact', size.height <= 650);
+    document.body.classList.toggle('little-landscape', size.width >= 480 && size.width > size.height);
     document.body.classList.toggle('little-wide-landscape', size.width >= 760 && size.width > size.height);
     document.body.classList.toggle('little-short-landscape', size.width >= 760 && size.width > size.height && size.height <= 650);
     root.style.setProperty('--little-view-width', size.width + 'px');
@@ -54,6 +66,7 @@
   current = read();
   update(false);
   window.addEventListener('resize', function () { update(true); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { update(true); });
   function syncNativeBar() {
     if (!window.location || !window.history || !window.history.replaceState || !window.URL) return;
     try {

@@ -93,7 +93,7 @@
     var view = window.LittleAppsOrientation && window.LittleAppsOrientation.dimensions();
     var width = view ? view.width : window.innerWidth || document.documentElement.clientWidth;
     var height = view ? view.height : window.innerHeight || document.documentElement.clientHeight;
-    if (width >= 760 && width > height) { return state.size === 4 ? 2 : 3; }
+    if (width >= 480 && width > height) { return state.size === 4 ? 2 : 3; }
     return width >= 480 || state.size === 4 ? state.size : 3;
   }
 
@@ -189,19 +189,21 @@
     var view = window.LittleAppsOrientation && window.LittleAppsOrientation.dimensions();
     var width = view ? view.width : window.innerWidth || document.documentElement.clientWidth;
     var height = view ? view.height : window.innerHeight || document.documentElement.clientHeight;
-    var landscape = width >= 760 && width > height;
+    var landscape = width >= 480 && width > height;
     var header = document.getElementById('sudoku-header');
     var availableWidth = shell.parentNode.clientWidth;
-    var below = landscape ? 0 : tools.offsetHeight + 20;
-    var availableHeight = height - (header ? header.offsetHeight : 78) - 48 - below;
-    var gap = 1;
-    var minimum = state.size * (state.size === 4 ? 48 : state.size === 6 ? 32 : 24) + (state.size + 3) * gap;
-    var size = Math.max(minimum, Math.floor(Math.min(availableWidth, landscape ? 620 : availableWidth, availableHeight)));
-    var cellSize = Math.floor((size - (state.size + 3) * gap) / state.size);
+    var main = document.getElementById('sudoku-main');
+    var padding = main && window.getComputedStyle(main);
+    var verticalInset = padding ? parseFloat(padding.paddingTop) + parseFloat(padding.paddingBottom) : 48;
+    var toolsGap = main ? parseFloat(window.getComputedStyle(tools).marginTop) : 20;
+    var below = landscape ? 0 : tools.offsetHeight + toolsGap;
+    var availableHeight = height - (header ? header.offsetHeight : 52) - verticalInset - below;
+    var size = Math.max(1, Math.floor(Math.min(availableWidth, landscape ? 620 : availableWidth, availableHeight)));
+    var cellSize = Math.max(1, Math.floor((size - state.size - 7) / state.size));
     shell.style.width = size + 'px';
     for (var i = 0; i < cells.length; i += 1) {
       cells[i].style.height = cellSize + 'px';
-      cells[i].style.fontSize = Math.max(18, Math.floor(cellSize * 0.55)) + 'px';
+      cells[i].style.fontSize = Math.max(12, Math.floor(cellSize * 0.55)) + 'px';
     }
   }
 

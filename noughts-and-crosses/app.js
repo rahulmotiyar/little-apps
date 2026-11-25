@@ -136,7 +136,7 @@
     previousTop = top;
     previousAvailable = available;
     shell.style.width = '100%';
-    var cellHeight = Math.max(48, Math.floor((height - top - 16 - 6) / 3));
+    var cellHeight = Math.max(1, Math.floor((height - top - 16 - 6) / 3));
     var markSize = Math.floor(Math.min(cellHeight, (available - 6) / 3) * 0.65);
     for (var i = 0; i < cells.length; i += 1) {
       cells[i].style.height = cellHeight + 'px';

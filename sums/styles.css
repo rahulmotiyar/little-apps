@@ -1,4 +1,3 @@
-.sums-page { min-height: var(--little-view-height, 100vh); display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
 .sums-header { -webkit-flex: none; flex: none; }
 .sums-header .tool-title { font-size: 28px; line-height: 34px; font-weight: bold; }
 .sums-actions { white-space: nowrap; }
@@ -13,7 +12,7 @@
 .progress-star { display: inline-block; width: 32px; height: 32px; margin: 0 5px; fill: #fff; stroke: #000; stroke-width: 1.5; stroke-linejoin: round; }
 .progress-star.earned { fill: #000; }
 .progress-copy { margin: 6px 0 0; font-size: 17px; }
-.math-layout { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; width: 100%; }
+.math-layout { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; width: 100%; min-height: 0; }
 .question-area { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; text-align: center; padding: 10px 0; }
 .question-prompt { margin: 0 0 12px; font-size: 20px; }
 .equation { font-size: 80px; font-weight: bold; line-height: 1.2; letter-spacing: -2px; white-space: nowrap; }
@@ -46,12 +45,6 @@
 .result-copy { margin: 0 0 24px; font-size: 17px; }
 .result-action { display: block; width: 100%; min-height: 54px; margin: 12px 0 0; padding: 12px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: inherit; font-weight: bold; line-height: 1.3; text-align: center; text-decoration: none; cursor: pointer; -webkit-appearance: none; }
 .result-primary { background: #000; color: #fff; }
-@media (orientation: landscape) and (min-width: 760px) {
-  .math-layout { -webkit-flex-direction: row; flex-direction: row; -webkit-align-items: center; align-items: center; }
-  .question-area { width: 52%; -webkit-flex: none; flex: none; padding: 24px 22px 24px 0; }
-  .answers-area { width: 48%; }
-  .equation { font-size: 76px; }
-}
 
 /* Keep the Kindle toolbar together, with distinct space around each control. */
 .sums-page .sums-main { padding-top: 32px; padding-bottom: 24px; }
@@ -76,8 +69,6 @@
   .sums-main { padding: 12px 16px; }
 }
 @media (max-width: 480px) {
-  .sums-actions { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
-  .sums-actions .tool-button { width: 100%; margin: 8px 0 0; }
   .equation { font-size: 60px; }
   .question-area { padding: 22px 0; }
   .answer-choice { min-height: 78px; font-size: 34px; }
@@ -134,11 +125,12 @@
 .question-anchor { position:relative; width:100%; padding-bottom:160px; }
 .question-anchor .counting-help { position:absolute; top:auto; bottom:0; left:0; height:148px; max-height:148px; margin:0; overflow-y:auto; }
 
-/* Manual landscape has a rotated viewport, so physical orientation media queries do not apply. */
-body.little-wide-landscape .math-layout { flex-direction:row; align-items:center; }
-body.little-wide-landscape .question-area { width:52%; flex:none; padding:24px 22px 24px 0; }
-body.little-wide-landscape .answers-area { width:48%; }
-body.little-wide-landscape .equation { font-size:76px; }
+/* The logical viewport also covers screens rotated in Display settings. */
+.equation { font-size:clamp(28px, calc(var(--little-view-width, 100vw) * .12), 80px); }
+body.little-landscape .math-layout { flex-direction:row; align-items:center; }
+body.little-landscape .question-area { width:55%; flex:none; padding:12px 12px 12px 0; }
+body.little-landscape .answers-area { width:45%; }
+body.little-landscape .equation { font-size:clamp(26px, calc(var(--little-view-width, 100vw) * .068), 76px); }
 
 /* Keep the outer answer-grid insets equal at each responsive size. */
 .sums-page .sums-main { padding-left:24px; padding-right:24px; padding-bottom:24px; }
@@ -148,3 +140,30 @@ body.little-wide-landscape .equation { font-size:76px; }
 @media (max-width:380px) {
  .sums-page .sums-main { padding-left:12px; padding-right:12px; padding-bottom:12px; }
 }
+
+body.little-compact .sums-page .sums-main { padding:10px 12px 12px; }
+body.little-compact .round-progress { display:flex; align-items:center; justify-content:center; }
+body.little-compact .progress-star { width:24px; height:24px; margin:0 4px; vertical-align:middle; }
+body.little-compact .progress-copy { margin:0 0 0 8px; }
+body.little-compact .question-area { padding-top:4px; padding-bottom:4px; min-height:0; }
+body.little-compact .hint-button { min-height:40px; padding:6px 10px; margin-top:6px; }
+body.little-compact .question-anchor {
+  --hint-space:112px;
+  padding-bottom:112px;
+  padding-bottom:var(--hint-space);
+}
+@supports (height: clamp(40px, 50px, 60px)) {
+  body.little-compact:not(.little-landscape) .question-anchor {
+    --hint-space:clamp(40px, calc(var(--little-view-height, 100vh) * .6 - 190px), 112px);
+  }
+}
+body.little-compact .question-anchor .counting-help { height:106px; height:calc(var(--hint-space) - 6px); }
+body.little-compact .counting-help p { margin:0 0 3px; font-size:14px; line-height:1.25; }
+body.little-compact .dot-group { line-height:16px; }
+body.little-compact .sum-dot { width:10px; height:10px; margin:2px; }
+body.little-compact .sum-dot.taken-away:after { top:2px; left:-3px; width:12px; }
+body.little-compact .choice-row { margin-bottom:6px; }
+body.little-compact .choice-row:last-child { margin-bottom:0; }
+body.little-compact .choice-slot + .choice-slot { margin-left:6px; }
+body.little-compact .answer-choice { min-height:50px; padding:5px; font-size:28px; }
+body.little-compact .feedback { min-height:18px; margin:3px 0 0; font-size:15px; line-height:1.2; }

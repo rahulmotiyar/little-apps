@@ -13,7 +13,8 @@
   function sync() {
     views.forEach(function (view) {
       var selected = view.source.options[view.source.selectedIndex];
-      view.text.textContent = selected ? selected.textContent : '';
+      var shortLabel = selected && document.body.classList.contains('little-narrow') && selected.getAttribute('data-short');
+      view.text.textContent = shortLabel || (selected ? selected.textContent : '');
       view.trigger.disabled = view.source.disabled;
       if (opened && opened.view === view && view.source.disabled) { close(false); }
     });
@@ -76,7 +77,7 @@
   });
   document.addEventListener('click', function (event) { if (opened && !opened.panel.contains(event.target) && !opened.view.trigger.contains(event.target)) { close(false); } });
   window.addEventListener('resize', function () { close(false); });
-  window.addEventListener('littleappsorientationchange', function () { close(false); });
+  window.addEventListener('littleappsorientationchange', function () { close(false); sync(); });
   window.addEventListener('pagehide', function () { close(false); });
   window.addEventListener('pageshow', sync);
   sync();

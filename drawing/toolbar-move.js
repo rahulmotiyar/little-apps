@@ -56,9 +56,13 @@
   }
   function applyPosition() {
     if (position) { setLayout(position.edge === 'left' || position.edge === 'right' ? 'vertical' : position.edge === 'top' || position.edge === 'bottom' ? 'horizontal' : position.layout || 'vertical'); }
+    else { setLayout(paper.clientWidth >= 480 && paper.clientHeight < 432 ? 'horizontal' : 'vertical'); }
     toolbar.setAttribute('data-dock', position && position.edge || '');
     var m = metrics();
-    if (!position) { setPixels(Math.max(0, m.maxX - 12), Math.min(12, m.maxY)); }
+    if (!position) {
+      setPixels(Math.max(0, m.maxX - 12), Math.min(12, m.maxY));
+      position = null;
+    }
     else {
       var x = position.x * m.maxX, y = position.y * m.maxY;
       if (position.edge === 'left') { x = 0; y = 0; }
@@ -97,12 +101,13 @@
   }
   function end() {
     if (!drag) { return; }
+    if (!drag.moved) { drag = null; return; }
     var m = metrics(), rect = logicalRect(toolbar);
     var x = (rect.left - m.bounds.left) * m.sx, y = (rect.top - m.bounds.top) * m.sy;
     var edges = [ { name:'left', distance:x }, { name:'right', distance:m.maxX-x },
       { name:'top', distance:y }, { name:'bottom', distance:m.maxY-y } ];
     edges.sort(function (a, b) { return a.distance - b.distance; });
-    var edge = drag.moved ? (edges[0].distance <= 0.5 ? edges[0].name : null) : drag.edge;
+    var edge = edges[0].distance <= 0.5 ? edges[0].name : null;
     if (edge) {
       setLayout(edge === 'left' || edge === 'right' ? 'vertical' : 'horizontal');
       toolbar.setAttribute('data-dock', edge);

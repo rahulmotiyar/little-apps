@@ -1,4 +1,3 @@
-.match-page { min-height: var(--little-view-height, 100vh); display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
 .match-header { -webkit-flex: none; flex: none; }
 .match-header .tool-title { font-size: 28px; line-height: 34px; font-weight: bold; }
 .match-actions { white-space: nowrap; }
@@ -14,22 +13,23 @@
 .progress-star.earned { fill: #000; }
 .progress-copy { margin: 6px 0 0; font-size: 17px; }
 .instruction { margin: 8px 0 12px; font-size: 20px; text-align: center; }
-.match-board { display: -webkit-flex; display: flex; width: 100%; -webkit-flex: 1; flex: 1; }
-.card-column { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; width: 50%; min-width: 0; }
+.match-board { display: -webkit-flex; display: flex; width: 100%; -webkit-flex: 1; flex: 1; min-height: 0; }
+.card-column { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; -webkit-flex: 1; flex: 1; min-width: 0; min-height: 0; }
 .card-column + .card-column { margin-left: 24px; }
-.card-button { position: relative; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; width: 100%; -webkit-flex: 1; flex: 1; min-height: 116px; padding: 10px 24px; border: 2px solid #000; border-radius: 16px; background: #fff; color: #000; font: inherit; font-size: 36px; font-weight: bold; line-height: 1.2; text-align: center; cursor: pointer; -webkit-appearance: none; }
+.card-button { position: relative; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; width: 100%; -webkit-flex: 1; flex: 1; min-height: 0; padding: 4px 12px; border: 2px solid #000; border-radius: 16px; background: #fff; color: #000; font: inherit; font-size: 36px; font-weight: bold; line-height: 1.2; text-align: center; cursor: pointer; -webkit-appearance: none; }
 .card-button + .card-button { margin-top: 12px; }
 .card-button:focus { outline: none; box-shadow: none; }
 .card-button.chosen { background: #000; color: #fff; }
 .card-button.matched, .card-button:disabled { border-color: #b8b8b8; background: #f2f2f2; color: #777; opacity: 1; cursor: default; }
 .card-content { display: block; max-width: 100%; }
-.card-text { white-space: normal; }
+.card-text { white-space: normal; overflow-wrap: anywhere; }
 .match-tick { display: none; position: absolute; right: 9px; top: 7px; font-size: 20px; line-height: 1; }
 .matched .match-tick { display: block; }
 .dot-five { display: block; line-height: 16px; white-space: nowrap; }
 .dot-five + .dot-five { margin-top: 4px; }
 .count-dot { display: inline-block; width: 12px; height: 12px; margin: 0 3px; border-radius: 50%; background: currentColor; vertical-align: middle; }
-.clock-face { display: block; width: 92px; height: 92px; margin: 0 auto; }
+.card-clock-content { width: 100%; height: 100%; }
+.clock-face { display: block; width: 92px; max-width: 100%; height: 100%; max-height: 92px; margin: 0 auto; }
 .feedback { min-height: 28px; margin: 12px 0 0; font-size: 18px; line-height: 1.4; text-align: center; }
 .match-result { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 10; display: table; width: 100%; height: 100%; background: #fff; background: rgba(255,255,255,.84); }
 .result-center { display: table-cell; vertical-align: middle; padding: 16px; text-align: center; }
@@ -41,7 +41,7 @@
 .result-primary { background: #000; color: #fff; }
 @media (min-width: 760px) and (min-height: 900px) {
   .card-button { font-size: 44px; }
-  .clock-face { width: 140px; height: 140px; }
+  .clock-face { width: 140px; max-height: 140px; }
   .count-dot { width: 16px; height: 16px; margin: 0 5px; }
   .dot-five { line-height: 20px; }
   .dot-five + .dot-five { margin-top: 8px; }
@@ -53,40 +53,24 @@
   .match-exit { display: inline; margin: 0; padding: 0; border: 0; }
   .match-main { padding: 12px 16px 8px; }
   .card-column + .card-column { margin-left: 16px; }
-  .card-button { padding-left: 20px; padding-right: 20px; }
 }
 @media (max-width: 480px) {
-  .match-actions { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
-  .match-actions .tool-button { width: 100%; margin: 8px 0 0; }
   .match-main { padding-left: 12px; padding-right: 12px; }
   .instruction { font-size: 18px; margin: 8px 0; }
   .card-column + .card-column { margin-left: 12px; }
-  .card-button { min-height: 100px; padding: 8px 18px; font-size: 25px; border-radius: 12px; }
+  .card-button { font-size: 25px; border-radius: 12px; }
   .card-button + .card-button { margin-top: 10px; }
-  .clock-face { width: 80px; height: 80px; }
+  .clock-face { width: 80px; max-height: 80px; }
   .feedback { font-size: 17px; }
 }
-@media (max-height: 650px) and (min-width: 760px) {
-  .match-main { padding-top: 8px; }
-  .progress-star { width: 26px; height: 26px; }
-  .progress-copy { margin-top: 4px; }
-  .instruction { margin: 8px 0 10px; }
-  .card-button { min-height: 80px; padding-top: 4px; padding-bottom: 4px; font-size: 30px; }
-  .card-button + .card-button { margin-top: 8px; }
-  .clock-face { width: 72px; height: 72px; }
-  .dot-five { line-height: 12px; }
-  .dot-five + .dot-five { margin-top: 2px; }
-  .count-dot { width: 10px; height: 10px; }
-  .feedback { margin-top: 8px; }
-}
-body.little-short-landscape .match-main { padding-top:8px; }
-body.little-short-landscape .progress-star { width:26px; height:26px; }
-body.little-short-landscape .progress-copy { margin-top:4px; }
-body.little-short-landscape .instruction { margin:8px 0 10px; }
-body.little-short-landscape .card-button { min-height:64px; padding-top:4px; padding-bottom:4px; font-size:28px; }
-body.little-short-landscape .card-button + .card-button { margin-top:8px; }
-body.little-short-landscape .clock-face { width:72px; height:72px; }
-body.little-short-landscape .dot-five { line-height:12px; }
-body.little-short-landscape .dot-five + .dot-five { margin-top:2px; }
-body.little-short-landscape .count-dot { width:10px; height:10px; }
-body.little-short-landscape .feedback { margin-top:8px; }
+body.little-compact .match-main { padding-top:8px; }
+body.little-compact .round-progress { display:flex; align-items:center; justify-content:center; }
+body.little-compact .progress-star { width:24px; height:24px; margin:0 4px; vertical-align:middle; }
+body.little-compact .progress-copy { margin:0 0 0 8px; }
+body.little-compact .instruction { margin:6px 0 8px; font-size:17px; line-height:1.25; }
+body.little-compact .card-button { padding:2px 6px; font-size:24px; }
+body.little-compact .card-button + .card-button { margin-top:6px; }
+body.little-compact .dot-five { height:8px; font-size:0; line-height:8px; }
+body.little-compact .dot-five + .dot-five { margin-top:2px; }
+body.little-compact .count-dot { width:8px; height:8px; }
+body.little-compact .feedback { min-height:20px; margin:4px 0 0; font-size:15px; line-height:20px; }

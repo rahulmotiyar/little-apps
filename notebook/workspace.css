@@ -57,9 +57,18 @@
 .notebook-page.tool-draw .editor-paper .drawing-mode,
 .notebook-page.tool-erase .editor-paper .drawing-mode { pointer-events:auto; }
 .notebook-page #note-drawing, .notebook-page .editor-body { background:transparent; }
+.notebook-page .editor-body { min-height:0; }
+#empty-notebook { overflow:auto; max-height:100%; }
 @media (max-width:700px) {
  .notebook-page .editor-heading { flex-wrap:wrap; }
  .notebook-page .editor-title { flex-basis:100%; }
  .notebook-page .editor-meta { max-width:100%; margin-left:auto; }
  .notebook-page .editor-meta time { font-size:12px; margin-left:4px; }
 }
+body.little-narrow .notebook-page .notes-list-panel { flex:0 0 120px; width:120px; min-width:0; }
+body.little-narrow .notebook-page .editor-heading { flex-wrap:wrap; padding:6px 10px; }
+body.little-narrow .notebook-page .editor-title { flex-basis:100%; min-height:36px; }
+body.little-narrow .notebook-page .editor-meta { width:100%; margin-left:0; justify-content:flex-start; flex-wrap:wrap; white-space:normal; }
+body.little-narrow .notebook-page .editor-meta time { margin:0; font-size:12px; }
+body.little-narrow .index-heading { padding:6px; }
+body.little-narrow .index-action { padding:4px; font-size:15px; }

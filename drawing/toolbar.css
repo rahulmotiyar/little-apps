@@ -24,6 +24,7 @@
 .drawing-toolbar::-webkit-scrollbar { display:none; }
 .drawing-toolbar[data-layout="vertical"] { flex-direction:column; max-height:calc(100% - 24px); overflow-y:auto; overflow-x:hidden; }
 .drawing-toolbar[data-layout="vertical"] .drawing-tool-divider { width:32px; height:1px; margin:4px 0; }
+.little-compact .drawing-toolbar[data-layout="vertical"] .drawing-tool-divider { margin-bottom:2px; margin-top:2px; }
 .drawing-toolbar .icon-pen::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
 .drawing-toolbar .icon-pen[aria-pressed="true"]::before { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020l1-5L15%205a2.1%202.1%200%200%201%203%200l1%201a2.1%202.1%200%200%201%200%203L9%2019zM13.5%206.5l4%204%22%2F%3E%3C%2Fsvg%3E"); }
 
@@ -65,11 +66,12 @@
 .drawing-file-button .button-icon { flex:none; width:16px; height:16px; margin:0 0 0 6px; stroke-width:1.8; }
 .drawing-file-menu { position:absolute; top:100%; left:0; z-index:10; box-sizing:border-box; width:300px; max-width:calc(var(--little-view-width, 100vw) - 24px); padding:12px; border:1px solid #777; border-radius:10px; background:#fff; box-shadow:0 2px 0 #bbb; text-align:left; }
 .drawing-file-menu[hidden] { display:none; }
+.drawing-file-menu { max-width:calc(var(--little-view-width, 100vw) - 80px); max-height:calc(var(--little-view-height, 100vh) - 60px); overflow:auto; }
 .drawing-file-menu label, .drawing-file-menu-heading { display:block; margin:0 0 6px; color:#555; font-size:14px; font-weight:600; }
 .drawing-rename-row { display:flex; margin-bottom:16px; }
 .drawing-rename-row input { box-sizing:border-box; min-width:0; flex:1; height:44px; padding:0 10px; border:1px solid #888; border-radius:8px 0 0 8px; font-size:16px; }
 .drawing-rename-row button { min-height:44px; padding:0 12px; border:1px solid #888; border-left:0; border-radius:0 8px 8px 0; background:#e6e6e6; color:#1c1c1c; font-size:16px; }
-.drawing-file-list { max-height:40vh; overflow-y:auto; scrollbar-width:none; }
+.drawing-file-list { max-height:calc(var(--little-view-height, 100vh) * .4); overflow-y:auto; scrollbar-width:none; }
 .drawing-file-list::-webkit-scrollbar { display:none; }
 .drawing-file-row, .drawing-new-file { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:44px; padding:8px 10px; border:0; border-radius:6px; background:transparent; color:#1c1c1c; font-size:16px; text-align:left; }
 .drawing-file-row span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

@@ -1,4 +1,3 @@
-.settings-page { display:flex; flex-direction:column; min-height:var(--little-view-height, 100vh); }
 .settings-page .tool-controls { display:flex; justify-content:flex-end; }
 .settings-page .tool-header.tool-header { box-shadow:none; }
 .settings-page .tool-header .app-exit-group .app-close { border-left:0; }
@@ -27,6 +26,8 @@
   .settings-title { padding-left:10px; padding-right:10px; }
 }
 body.little-wide-landscape .settings-navigation { width:240px; }
+body.little-narrow .settings-navigation { width:120px; }
+body.little-compact .display-options { margin-top:12px; }
 
 .display-options { margin:24px 0 0; padding:0; border:0; }
 .display-options legend { padding:0 0 8px; font-size:16px; font-weight:600; }
